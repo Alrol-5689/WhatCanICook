@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">WhatCanICook</string>
+    <string name="welcome_title">Comparte lo que cocinas</string>
+    <string name="welcome_subtitle">Sube tus recetas y descubre las de la comunidad</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="login_cta">Entrar</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="guest_cta">Continuar como invitado</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="or_separator">o</string>
 </resources>
