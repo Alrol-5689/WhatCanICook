@@ -34,7 +34,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     viewBinding {
-        enable = true;
+        enable = true
     }
 }
 
