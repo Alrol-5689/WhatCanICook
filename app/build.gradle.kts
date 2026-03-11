@@ -1,14 +1,27 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
 
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        localFile.inputStream().use { load(it) }
+    }
+}
+
 android {
     namespace = "com.app"
+
+    compileSdk = 36
+
+    /* SISTEMA NUEVO EXPERIMENTAL
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
         }
-    }
+    }*/
 
     defaultConfig {
         applicationId = "com.app"
@@ -18,6 +31,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val baseUrl = localProperties.getProperty("BASE_URL") ?: "http://10.0.2.2:8080/"
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
     buildTypes {
@@ -33,9 +49,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    viewBinding {
-        enable = true
+
+    buildFeatures {
+        buildConfig = true // clase BuildConfig
+        viewBinding = true // clase ActivityLoginBinding...
+        //dataBinding // binding avanzado con XML
     }
+
 }
 
 dependencies {
