@@ -1,4 +1,9 @@
 package com.app.model.entity
 
-class RecipeStep {
-}
+data class RecipeStep(
+
+    val id: Long,
+    val stepNumber: Int,
+    val description: String
+
+)

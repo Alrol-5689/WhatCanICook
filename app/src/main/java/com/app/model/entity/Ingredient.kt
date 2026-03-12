@@ -1,4 +1,8 @@
 package com.app.model.entity
 
-class Ingredient {
-}
+data class Ingredient(
+
+    val id: Long,
+    val name: String
+
+)
