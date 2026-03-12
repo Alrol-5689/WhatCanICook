@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
             val request = LoginRequest(email, password)
 
             authService.login(request).enqueue(object : Callback<AuthResponse> {
-
+                // Llamamos al back
                 override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
 
                     if (response.isSuccessful && response.body()?.success == true) {
@@ -53,9 +53,11 @@ class LoginActivity : AppCompatActivity() {
 
                         Snackbar.make(binding.root, "Login correcto", Snackbar.LENGTH_SHORT).show()
 
+                        val user = authResponse?.user
+
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        intent.putExtra("username", authResponse?.username)
-                        intent.putExtra("email", authResponse?.email)
+                        intent.putExtra("username", user?.username)
+                        intent.putExtra("email", user?.email)
                         startActivity(intent)
                         finish()
 
