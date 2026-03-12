@@ -47,10 +47,22 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "favorite_recipes",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id")
-    )
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    foreignKey = @ForeignKey(name = "fk_favorite_recipes_user")),
+            inverseJoinColumns = @JoinColumn(
+                    name = "recipe_id",
+                    foreignKey = @ForeignKey(name = "fk_favorite_recipes_recipe")))
     private List<Recipe> favoriteRecipes = new ArrayList<>();
+
+//    User  ←→  Recipe
+//
+//    User 1 ─── N favorite_recipes N ─── 1 Recipe
+//
+//            favorite_recipes
+//    ----------------
+//    user_id      → FK a users.id
+//    recipe_id    → FK a recipes.id
 
 
 }

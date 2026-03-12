@@ -21,7 +21,8 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 150)
+    @Column(nullable = false,
+            length = 150)
     private String title;
 
     @Column(length = 1000)
@@ -31,16 +32,22 @@ public class Recipe {
     private boolean publicRecipe = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "fk_recipes_user"))
     @JsonIgnoreProperties({"recipes", "favoriteRecipes"})
     private User user;
 
     @ManyToMany
     @JoinTable(
             name = "recipe_ingredients",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id")
-    )
+            joinColumns = @JoinColumn(
+                    name = "recipe_id",
+                    foreignKey = @ForeignKey(name = "fk_recipe_ingredients_recipe")),
+            inverseJoinColumns = @JoinColumn(
+                    name = "ingredient_id",
+                    foreignKey = @ForeignKey(name = "fk_recipe_ingredients_ingredient")))
     private List<Ingredient> ingredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)

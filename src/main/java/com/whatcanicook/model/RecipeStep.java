@@ -20,7 +20,10 @@ public class RecipeStep {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipe_id", nullable = false)
+    @JoinColumn(
+            name = "recipe_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_recipe_steps_recipe")
+    )
     private Recipe recipe;
 
     @Column(nullable = false)
