@@ -3,14 +3,26 @@
 Red social de recetas en Android (Kotlin, Material 3). La app permite autenticarse, publicar recetas y descubrir lo que cocina la comunidad.
 
 ## Estado actual
-- Pantalla de **logueo** diseñada con Material 3: logo, copy de bienvenida, campos de email/contraseña y acciones "Entrar", "Crear cuenta" y "Continuar como invitado".
+- Pantalla de **login** funcional con validación básica y navegación a `MainActivity` tras éxito.
 - Tema `Theme.WhatCanICook` basado en Material 3 DayNight listo para extender.
+- Retrofit configurado con `BuildConfig.BASE_URL` y repositorio de autenticación mínimo.
 - Configuración de compilación: `compileSdk 36`, `minSdk 24`, `targetSdk 36`, Gradle 9.2.1 y AGP 9.0.1.
 
 ## Requisitos
 - JDK 17 (necesario para Gradle 9.2.1/AGP 9.x).
 - Android Studio Ladybug (2024.1.2) o superior, con el SDK 36 instalado.
 - Dispositivo o emulador Android con API 24+.
+
+## Configurar el backend (BASE_URL)
+El cliente usa `BuildConfig.BASE_URL` definido en `app/build.gradle.kts`. Por defecto toma la propiedad `BASE_URL` de `local.properties` y, si no existe, cae a `http://10.0.2.2:8080/` (la IP del host vista desde el emulador estándar de Android).
+
+1) Abre `local.properties` (no se versiona) y añade/edita:
+   ```
+   BASE_URL=http://<tu_ip_host>:8080/
+   ```
+   - **Dispositivo físico por cable / Wi‑Fi**: el móvil y tu máquina deben estar en la **misma red**. Usa la IP de tu ordenador en esa red (ej. `192.168.x.x`).
+   - **Emulador**: puedes borrar esa línea o poner la IP de la VM que uses. En el emulador clásico basta no definirla para usar `10.0.2.2`.
+2) Reinicia la sincronización Gradle para regenerar `BuildConfig`.
 
 ## Puesta en marcha rápida
 1) Abre el proyecto en Android Studio y sincroniza Gradle, o instala dependencias por CLI con `./gradlew tasks`.
@@ -24,11 +36,16 @@ Red social de recetas en Android (Kotlin, Material 3). La app permite autenticar
 - Unitarias JVM: `./gradlew test`.
 - Instrumentadas: `./gradlew connectedAndroidTest` (requiere dispositivo o emulador).
 
-## Estructura útil
-- `app/src/main/java/com/app/MainActivity.kt` – actividad principal.
-- `app/src/main/res/layout/activity_main.xml` – pantalla de logueo.
-- `app/src/main/AndroidManifest.xml` – declaración de actividad y tema.
-- `gradle/libs.versions.toml` – versiones centralizadas de dependencias y plugins.
+## Esquema de clases (función principal)
+- `network/RetrofitClient` – construye Retrofit con `BuildConfig.BASE_URL` y expone `authApi`.
+- `network/AuthApi` – endpoints `auth/login` y `auth/register`.
+- `repository/AuthRepository` – capa intermedia que delega en `AuthApi`.
+- `ui/login/LoginViewModel` – valida campos, invoca `AuthRepository.login`, expone `LiveData` de éxito/error.
+- `ui/login/LoginActivity` – binding de UI, observa el ViewModel y navega a `MainActivity` con los datos del usuario.
+- `ui/main/MainActivity` – muestra username/email y permite cerrar sesión (vuelve a `LoginActivity`).
+- `ui/register/…` y `ui/recipes/…` – actividades vacías listas para implementar registro y navegación de recetas.
+- `model/entity` – `User`, `Recipe`, `Ingredient`, `RecipeStep` básicos.
+- `model/request` / `model/response` – DTOs para login/registro y respuesta de autenticación.
 
 ## Roadmap social
 - Feed de recetas: global y siguiendo.
@@ -38,6 +55,6 @@ Red social de recetas en Android (Kotlin, Material 3). La app permite autenticar
 - Buscador por ingredientes/tags.
 
 ## Próximos pasos sugeridos
-- Conectar la pantalla de logueo a un proveedor de autenticación (Firebase Auth, Supabase, OIDC propio).
-- Añadir navegación a un `HomeActivity`/`HomeScreen` con feed simulado mientras se implementa el backend.
-- Crear modelos `User` y `Recipe` y repositorios (remoto + caché Room) para empezar a poblar el feed.
+- Añadir backend real a `BASE_URL` y manejar tokens en `AuthInterceptor/SessionManager`.
+- Conectar la pantalla de registro (`RegisterActivity`) y construir el flujo de alta.
+- Crear `RecipeRepository` y poblar `RecipesActivity`/`RecipeDetailActivity` con datos reales o mock.
