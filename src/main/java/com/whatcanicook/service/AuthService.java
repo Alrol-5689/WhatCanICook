@@ -1,8 +1,8 @@
 package com.whatcanicook.service;
 
-import com.whatcanicook.dto.LoginRequest;
-import com.whatcanicook.dto.AuthResponse;
-import com.whatcanicook.dto.RegisterRequest;
+import com.whatcanicook.dto.request.LoginRequest;
+import com.whatcanicook.dto.response.AuthResponse;
+import com.whatcanicook.dto.request.RegisterRequest;
 import com.whatcanicook.model.User;
 import com.whatcanicook.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,23 +1,17 @@
-package com.whatcanicook.dto;
+package com.whatcanicook.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class RegisterRequest {
-
-    @NotBlank
-    @Size(min = 3, max = 50)
-    private String username;
+public class LoginRequest {
 
     @NotBlank
     @Email
     private String email;
 
     @NotBlank
-    @Size(min = 4, max = 255)
     private String password;
 
 }

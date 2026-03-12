@@ -1,4 +1,4 @@
-package com.whatcanicook.dto;
+package com.whatcanicook.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
