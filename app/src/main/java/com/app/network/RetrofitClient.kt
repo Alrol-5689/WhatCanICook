@@ -13,6 +13,10 @@ object RetrofitClient {
             .build()
     }
 
+    val authApi: AuthApi by lazy {
+        retrofit.create(AuthApi::class.java)
+    }
+
     val instance: Retrofit
         get() = retrofit
 }

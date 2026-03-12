@@ -1,14 +1,14 @@
 package com.app.network
 
-import com.app.model.request.LoginRequest;
+import com.app.model.request.LoginRequest
 import com.app.model.request.RegisterRequest
-import com.app.model.response.AuthResponse;
+import com.app.model.response.AuthResponse
 
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.POST
 
-interface AuthService {
+interface AuthApi {
 
     @POST("auth/login")
     fun login(@Body request: LoginRequest): Call<AuthResponse>
