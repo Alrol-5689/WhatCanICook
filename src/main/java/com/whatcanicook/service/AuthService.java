@@ -1,5 +1,6 @@
 package com.whatcanicook.service;
 
+import com.whatcanicook.dto.model.UserDto;
 import com.whatcanicook.dto.request.LoginRequest;
 import com.whatcanicook.dto.response.AuthResponse;
 import com.whatcanicook.dto.request.RegisterRequest;
@@ -24,7 +25,6 @@ public class AuthService {
             return new AuthResponse(
                     false,
                     "El email ya está registrado",
-                    null,
                     null
             );
         }
@@ -32,7 +32,6 @@ public class AuthService {
             return new AuthResponse(
                     false,
                     "El username está en uso",
-                    null,
                     null
             );
         }
@@ -48,8 +47,7 @@ public class AuthService {
         return new AuthResponse(
                 true,
                 "Usuario registrado correctamente",
-                user.getUsername(),
-                user.getEmail()
+                new UserDto(user.getId(), user.getUsername(), user.getEmail())
         );
     }
 
@@ -60,12 +58,10 @@ public class AuthService {
                 .map(user -> new AuthResponse(
                         true,
                         "Login correcto",
-                        user.getUsername(),
-                        user.getEmail()))
+                        new UserDto(user.getId(), user.getUsername(), user.getEmail())))
                 .orElse(new AuthResponse(
                         false,
                         "Credenciales incorrectas",
-                        null,
                         null));
     }
 }
