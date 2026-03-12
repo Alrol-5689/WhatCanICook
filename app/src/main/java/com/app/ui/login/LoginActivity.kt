@@ -53,5 +53,13 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.passwordInput.text.toString()
             viewModel.login(email, password)
         }
+
+        binding.createAccountButton.setOnClickListener {
+
+             /*TODO -> Hay que crear:
+            · CreateAccountActivity
+            · activity_create_account
+            · CreateAccountViewModel*/
+        }
     }
 }
