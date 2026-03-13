@@ -17,3 +17,12 @@ local.properties
 *.log
 *.jks
 *.keystore
+.idea/
+.gradle/
+.kotlin/
+frontend/.idea/
+frontend/.gradle/
+frontend/.kotlin/
+frontend/local.properties
+frontend/build/
+backend/target/
