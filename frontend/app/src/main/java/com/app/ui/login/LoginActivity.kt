@@ -10,6 +10,7 @@ import com.app.model.response.AuthResponse
 import com.app.network.AuthApi
 import com.app.network.RetrofitClient
 import com.app.ui.main.MainActivity
+import com.app.ui.register.RegisterActivity
 import com.google.android.material.snackbar.Snackbar
 import retrofit2.Call
 import retrofit2.Callback
@@ -55,11 +56,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.createAccountButton.setOnClickListener {
-
-             /*TODO -> Hay que crear:
-            · CreateAccountActivity
-            · activity_create_account
-            · CreateAccountViewModel*/
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
     }
 }
