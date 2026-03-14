@@ -38,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
             Snackbar.make(binding.root, "Login correcto", Snackbar.LENGTH_SHORT).show()
             val user = authResponse.user
             val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            intent.putExtra("userId", user?.id)
             intent.putExtra("username", user?.username)
             intent.putExtra("email", user?.email)
             startActivity(intent)
