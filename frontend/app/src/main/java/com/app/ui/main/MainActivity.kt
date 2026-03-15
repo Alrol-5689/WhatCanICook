@@ -29,15 +29,16 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout.openDrawer(androidx.core.view.GravityCompat.START)
         }
 
-        binding.textUsername.text =
-            getString(
-                R.string.user_info,
-                username ?: "desconocido",
-                if (userId != -1L) userId.toString() else "X"
-            )
+        if (userId != -1L)
+            binding.drawerUsername.text =
+                getString(
+                    R.string.username_with_id,
+                    username ?: getString(R.string.unknown_user),
+                    userId
+                )
+        else binding.drawerUsername.text = username ?: getString(R.string.unknown_user)
 
-        binding.textEmail.text =
-            getString(R.string.email_info, email ?: "desconocido")
+        binding.drawerEmail.text = email ?: getString(R.string.unknown_user)
 
         binding.logoutButton.setOnClickListener {
 

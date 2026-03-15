@@ -10,12 +10,12 @@
     <string name="forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="or_separator">o</string>
     <string name="bienvenido">Bienvenido</string>
-    <string name="user_info">Eres: %1$s %2$s</string>
-    <string name="email_info">Tu correo es: %1$s</string>
     <string name="cerrar_sesi_n">Cerrar sesión</string>
     <string name="abrir_menu">Abrir menú</string>
     <string name="imagen_de_perfil">imagen_de_perfil</string>
     <string name="buscar_recetas">Buscar recetas</string>
+    <string name="username_with_id">%1$s (id: %2$d)</string>
+    <string name="unknown_user">desconocido</string>
     <string name="mis_recetas">Mis recetas</string>
     <string name="favoritas">Favoritas</string>
     <string name="amigos">Amigos</string>
