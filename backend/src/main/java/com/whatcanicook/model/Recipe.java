@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,6 +31,9 @@ public class Recipe {
     @Column(nullable = false)
     private boolean publicRecipe = true;
 
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "user_id",
@@ -53,4 +57,8 @@ public class Recipe {
     @OrderBy("stepNumber ASC")
     private List<RecipeStep> steps = new ArrayList<>();
 
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
