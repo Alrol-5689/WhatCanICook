@@ -1,12 +1,12 @@
-package com.app.model.response
+package com.app.dto.response
 
-import com.app.model.entity.User
+import com.app.dto.model.UserDto
 
 data class AuthResponse (
 
     val success: Boolean,
     val message: String,
-    val user: User?
+    val user: UserDto?
 
     // token?
 

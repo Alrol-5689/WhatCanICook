@@ -1,4 +1,4 @@
-package com.app.model.request
+package com.app.dto.request
 
 data class LoginRequest(
     val email: String,

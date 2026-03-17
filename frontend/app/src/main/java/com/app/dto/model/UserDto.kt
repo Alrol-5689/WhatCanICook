@@ -1,6 +1,6 @@
-package com.app.model.entity
+package com.app.dto.model
 
-data class User(
+data class UserDto(
 
     val id: Long,
     val username: String,

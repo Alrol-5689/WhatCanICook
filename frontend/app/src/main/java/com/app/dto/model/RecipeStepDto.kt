@@ -1,6 +1,6 @@
-package com.app.model.entity
+package com.app.dto.model
 
-data class RecipeStep(
+data class RecipeStepDto(
 
     val id: Long,
     val stepNumber: Int,
