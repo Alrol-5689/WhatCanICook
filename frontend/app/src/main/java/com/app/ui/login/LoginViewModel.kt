@@ -3,8 +3,8 @@ package com.app.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.app.model.request.LoginRequest
-import com.app.model.response.AuthResponse
+import com.app.dto.request.LoginRequest
+import com.app.dto.response.AuthResponse
 import com.app.network.RetrofitClient
 import com.app.repository.AuthRepository
 import retrofit2.Call

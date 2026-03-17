@@ -3,8 +3,8 @@ package com.app.ui.register
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.app.model.request.RegisterRequest
-import com.app.model.response.AuthResponse
+import com.app.dto.request.RegisterRequest
+import com.app.dto.response.AuthResponse
 import com.app.network.RetrofitClient
 import com.app.repository.AuthRepository
 import retrofit2.Call
