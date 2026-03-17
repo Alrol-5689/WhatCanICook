@@ -1,8 +1,8 @@
 package com.app.repository
 
-import com.app.model.request.LoginRequest
-import com.app.model.request.RegisterRequest
-import com.app.model.response.AuthResponse
+import com.app.dto.request.LoginRequest
+import com.app.dto.request.RegisterRequest
+import com.app.dto.response.AuthResponse
 import com.app.network.AuthApi
 import retrofit2.Call
 
