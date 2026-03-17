@@ -1,6 +1,7 @@
 package com.whatcanicook.service;
 
 import com.whatcanicook.dto.model.UserDto;
+import com.whatcanicook.mapper.UserMapper;
 import com.whatcanicook.model.User;
 import com.whatcanicook.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -11,15 +12,17 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     public List<UserDto> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(this::mapToDto)
+                .map(userMapper::toDto)
                 .toList();
     }
 
@@ -27,7 +30,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        return mapToDto(user);
+        return userMapper.toDto(user);
     }
 
     public List<UserDto> searchByUsername(String username) {
@@ -37,15 +40,7 @@ public class UserService {
 
         return userRepository.findByUsernameContainingIgnoreCase(username)
                 .stream()
-                .map(this::mapToDto)
+                .map(userMapper::toDto)
                 .toList();
-    }
-
-    private UserDto mapToDto(User user) {
-        return new UserDto(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail()
-        );
     }
 }

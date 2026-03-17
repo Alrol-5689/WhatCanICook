@@ -11,5 +11,5 @@ public class FavoriteRecipeDto {
 
     private Long userId;
 
-    private RecipeDto recipe;
+    private RecipeSummaryDto recipe;
 }

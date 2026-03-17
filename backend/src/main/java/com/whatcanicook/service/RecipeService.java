@@ -1,9 +1,9 @@
 package com.whatcanicook.service;
 
-import com.whatcanicook.dto.model.IngredientDto;
-import com.whatcanicook.dto.model.RecipeDto;
-import com.whatcanicook.dto.model.RecipeStepDto;
+import com.whatcanicook.dto.model.RecipeSummaryDto;
+import com.whatcanicook.dto.model.RecipeDetailDto;
 import com.whatcanicook.dto.request.CreateRecipeRequest;
+import com.whatcanicook.mapper.RecipeMapper;
 import com.whatcanicook.model.Ingredient;
 import com.whatcanicook.model.Recipe;
 import com.whatcanicook.model.RecipeStep;
@@ -22,44 +22,47 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final IngredientRepository ingredientRepository;
     private final UserRepository userRepository;
+    private final RecipeMapper recipeMapper;
 
     public RecipeService(RecipeRepository recipeRepository,
                          IngredientRepository ingredientRepository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         RecipeMapper recipeMapper) {
         this.recipeRepository = recipeRepository;
         this.ingredientRepository = ingredientRepository;
         this.userRepository = userRepository;
+        this.recipeMapper = recipeMapper;
     }
 
-    public List<RecipeDto> getPublicRecipes() {
+    public List<RecipeSummaryDto> getPublicRecipes() {
         return recipeRepository.findByPublicRecipeTrueOrderByCreatedAtDesc()
                 .stream()
-                .map(this::mapToDto)
+                .map(recipeMapper::toSummaryDto)
                 .toList();
     }
 
-    public List<RecipeDto> getRecipesByUser(Long userId) {
+    public List<RecipeSummaryDto> getRecipesByUser(Long userId) {
         return recipeRepository.findByUserId(userId)
                 .stream()
-                .map(this::mapToDto)
+                .map(recipeMapper::toSummaryDto)
                 .toList();
     }
 
-    public List<RecipeDto> searchRecipesByTitle(String title) {
+    public List<RecipeSummaryDto> searchRecipesByTitle(String title) {
         return recipeRepository.findByTitleContainingIgnoreCase(title)
                 .stream()
-                .map(this::mapToDto)
+                .map(recipeMapper::toSummaryDto)
                 .toList();
     }
 
-    public RecipeDto getRecipeById(Long recipeId) {
+    public RecipeDetailDto getRecipeById(Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("Receta no encontrada"));
 
-        return mapToDto(recipe);
+        return recipeMapper.toDetailDto(recipe);
     }
 
-    public RecipeDto createRecipe(CreateRecipeRequest request) {
+    public RecipeDetailDto createRecipe(CreateRecipeRequest request) {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
@@ -90,49 +93,6 @@ public class RecipeService {
         recipe.setSteps(steps);
 
         Recipe saved = recipeRepository.save(recipe);
-        return mapToDto(saved);
-    }
-
-    private RecipeDto mapToDto(Recipe recipe) {
-        List<IngredientDto> ingredientDtos = recipe.getIngredients()
-                .stream()
-                .map(this::mapIngredientToDto)
-                .toList();
-
-        List<RecipeStepDto> stepDtos = recipe.getSteps()
-                .stream()
-                .map(this::mapStepToDto)
-                .toList();
-
-        return new RecipeDto(
-                recipe.getId(),
-                recipe.getTitle(),
-                recipe.getDescription(),
-                recipe.isPublicRecipe(),
-                recipe.getUser().getId(),
-                recipe.getUser().getUsername(),
-                recipe.getCreatedAt(),
-                ingredientDtos,
-                stepDtos
-        );
-    }
-
-    private IngredientDto mapIngredientToDto(Ingredient ingredient) {
-        return new IngredientDto(
-                ingredient.getId(),
-                ingredient.getName(),
-                ingredient.getCarbs100g(),
-                ingredient.getProtein100g(),
-                ingredient.getFat100g(),
-                ingredient.getFiber100g()
-        );
-    }
-
-    private RecipeStepDto mapStepToDto(RecipeStep step) {
-        return new RecipeStepDto(
-                step.getId(),
-                step.getStepNumber(),
-                step.getDescription()
-        );
+        return recipeMapper.toDetailDto(saved);
     }
 }

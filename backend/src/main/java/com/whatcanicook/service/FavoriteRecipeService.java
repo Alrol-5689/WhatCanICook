@@ -1,13 +1,9 @@
 package com.whatcanicook.service;
 
 import com.whatcanicook.dto.model.FavoriteRecipeDto;
-import com.whatcanicook.dto.model.IngredientDto;
-import com.whatcanicook.dto.model.RecipeDto;
-import com.whatcanicook.dto.model.RecipeStepDto;
 import com.whatcanicook.dto.request.FavoriteRecipeRequest;
-import com.whatcanicook.model.Ingredient;
+import com.whatcanicook.mapper.RecipeMapper;
 import com.whatcanicook.model.Recipe;
-import com.whatcanicook.model.RecipeStep;
 import com.whatcanicook.model.User;
 import com.whatcanicook.repository.RecipeRepository;
 import com.whatcanicook.repository.UserRepository;
@@ -20,10 +16,14 @@ public class FavoriteRecipeService {
 
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
+    private final RecipeMapper recipeMapper;
 
-    public FavoriteRecipeService(UserRepository userRepository, RecipeRepository recipeRepository) {
+    public FavoriteRecipeService(UserRepository userRepository,
+                                 RecipeRepository recipeRepository,
+                                 RecipeMapper recipeMapper) {
         this.userRepository = userRepository;
         this.recipeRepository = recipeRepository;
+        this.recipeMapper = recipeMapper;
     }
 
     public List<FavoriteRecipeDto> getFavorites(Long userId) {
@@ -32,7 +32,7 @@ public class FavoriteRecipeService {
 
         return user.getFavoriteRecipes()
                 .stream()
-                .map(recipe -> mapToFavoriteDto(user.getId(), recipe))
+                .map(recipe -> new FavoriteRecipeDto(user.getId(), recipeMapper.toSummaryDto(recipe)))
                 .toList();
     }
 
@@ -54,7 +54,7 @@ public class FavoriteRecipeService {
         user.getFavoriteRecipes().add(recipe);
         userRepository.save(user);
 
-        return mapToFavoriteDto(user.getId(), recipe);
+        return new FavoriteRecipeDto(user.getId(), recipeMapper.toSummaryDto(recipe));
     }
 
     public void removeFavorite(Long userId, Long recipeId) {
@@ -69,52 +69,5 @@ public class FavoriteRecipeService {
         }
 
         userRepository.save(user);
-    }
-
-    private FavoriteRecipeDto mapToFavoriteDto(Long userId, Recipe recipe) {
-        return new FavoriteRecipeDto(userId, mapToDto(recipe));
-    }
-
-    private RecipeDto mapToDto(Recipe recipe) {
-        List<IngredientDto> ingredientDtos = recipe.getIngredients()
-                .stream()
-                .map(this::mapIngredientToDto)
-                .toList();
-
-        List<RecipeStepDto> stepDtos = recipe.getSteps()
-                .stream()
-                .map(this::mapStepToDto)
-                .toList();
-
-        return new RecipeDto(
-                recipe.getId(),
-                recipe.getTitle(),
-                recipe.getDescription(),
-                recipe.isPublicRecipe(),
-                recipe.getUser().getId(),
-                recipe.getUser().getUsername(),
-                recipe.getCreatedAt(),
-                ingredientDtos,
-                stepDtos
-        );
-    }
-
-    private IngredientDto mapIngredientToDto(Ingredient ingredient) {
-        return new IngredientDto(
-                ingredient.getId(),
-                ingredient.getName(),
-                ingredient.getCarbs100g(),
-                ingredient.getProtein100g(),
-                ingredient.getFat100g(),
-                ingredient.getFiber100g()
-        );
-    }
-
-    private RecipeStepDto mapStepToDto(RecipeStep step) {
-        return new RecipeStepDto(
-                step.getId(),
-                step.getStepNumber(),
-                step.getDescription()
-        );
     }
 }

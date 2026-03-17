@@ -5,12 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecipeDto {
+public class RecipeSummaryDto {
 
     private Long id;
 
@@ -25,8 +24,4 @@ public class RecipeDto {
     private String username;
 
     private LocalDateTime createdAt;
-
-    private List<IngredientDto> ingredients;
-
-    private List<RecipeStepDto> steps;
 }

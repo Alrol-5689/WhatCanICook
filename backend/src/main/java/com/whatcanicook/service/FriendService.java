@@ -2,6 +2,7 @@ package com.whatcanicook.service;
 
 import com.whatcanicook.dto.model.FriendDto;
 import com.whatcanicook.dto.request.FriendRequest;
+import com.whatcanicook.mapper.FriendMapper;
 import com.whatcanicook.model.Friend;
 import com.whatcanicook.model.User;
 import com.whatcanicook.model.enums.FriendStatus;
@@ -17,10 +18,14 @@ public class FriendService {
 
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
+    private final FriendMapper friendMapper;
 
-    public FriendService(FriendRepository friendRepository, UserRepository userRepository) {
+    public FriendService(FriendRepository friendRepository,
+                         UserRepository userRepository,
+                         FriendMapper friendMapper) {
         this.friendRepository = friendRepository;
         this.userRepository = userRepository;
+        this.friendMapper = friendMapper;
     }
 
     public FriendDto sendFriendRequest(FriendRequest request) {
@@ -53,13 +58,13 @@ public class FriendService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        return mapToDto(friendRepository.save(friendRequest));
+        return friendMapper.toDto(friendRepository.save(friendRequest));
     }
 
     public List<FriendDto> getPendingRequests(Long userId) {
         return friendRepository.findByReceiverIdAndStatus(userId, FriendStatus.PENDING)
                 .stream()
-                .map(this::mapToDto)
+                .map(friendMapper::toDto)
                 .toList();
     }
 
@@ -68,7 +73,7 @@ public class FriendService {
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
 
         friend.setStatus(FriendStatus.ACCEPTED);
-        return mapToDto(friendRepository.save(friend));
+        return friendMapper.toDto(friendRepository.save(friend));
     }
 
     public FriendDto rejectRequest(Long friendId) {
@@ -76,17 +81,6 @@ public class FriendService {
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
 
         friend.setStatus(FriendStatus.REJECTED);
-        return mapToDto(friendRepository.save(friend));
-    }
-    private FriendDto mapToDto(Friend friend) {
-        return new FriendDto(
-                friend.getId(),
-                friend.getRequester().getId(),
-                friend.getRequester().getUsername(),
-                friend.getReceiver().getId(),
-                friend.getReceiver().getUsername(),
-                friend.getStatus(),
-                friend.getCreatedAt()
-        );
+        return friendMapper.toDto(friendRepository.save(friend));
     }
 }
