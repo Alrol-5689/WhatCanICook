@@ -13,10 +13,23 @@ object RetrofitClient {
             .build()
     }
 
+    val instance: Retrofit
+        get() = retrofit
+
     val authApi: AuthApi by lazy {
         retrofit.create(AuthApi::class.java)
     }
 
-    val instance: Retrofit
-        get() = retrofit
+    val recipeApi: RecipeApi by lazy {
+        retrofit.create(RecipeApi::class.java)
+    }
+
+    val favoriteApi: FavoriteApi by lazy {
+        retrofit.create(FavoriteApi::class.java)
+    }
+
+    val friendApi: FriendApi by lazy {
+        retrofit.create(FriendApi::class.java)
+    }
+
 }
