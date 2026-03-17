@@ -5,16 +5,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.app.databinding.ActivityLoginBinding
-import com.app.model.request.LoginRequest
-import com.app.model.response.AuthResponse
-import com.app.network.AuthApi
-import com.app.network.RetrofitClient
 import com.app.ui.main.MainActivity
 import com.app.ui.register.RegisterActivity
 import com.google.android.material.snackbar.Snackbar
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
 
