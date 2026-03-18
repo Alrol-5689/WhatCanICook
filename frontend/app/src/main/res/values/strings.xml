@@ -12,6 +12,7 @@
     <string name="bienvenido">Bienvenido</string>
     <string name="cerrar_sesi_n">Cerrar sesión</string>
     <string name="abrir_menu">Abrir menú</string>
+    <string name="recipe_author">por %1$s</string>
     <string name="imagen_de_perfil">imagen_de_perfil</string>
     <string name="buscar_recetas">Buscar recetas</string>
     <string name="username_with_id">%1$s (id: %2$d)</string>
@@ -21,4 +22,6 @@
     <string name="amigos">Amigos</string>
     <string name="a_adir_amigos">Añadir amigos</string>
     <string name="subir_receta">Subir receta</string>
+    <string name="descripcion_de_la_receta">Descripción de la receta</string>
+    <string name="titulo_receta">Título receta</string>
 </resources>
