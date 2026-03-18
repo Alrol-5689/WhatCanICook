@@ -20,11 +20,11 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        observarViewModel()
-        acciones()
+        viewModelObserver()
+        actions()
     }
 
-    private fun observarViewModel() {
+    private fun viewModelObserver() {
         viewModel.loginResponse.observe(this) { authResponse ->
             // observe -> se espera a que LoginViewModel -> _loginResponse.value = authResponse
             // MutableLiveData -> "CAJA OBSERVABLE"
@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun acciones() {
+    private fun actions() {
         binding.loginButton.setOnClickListener {
             val email = binding.emailInput.text.toString()
             val password = binding.passwordInput.text.toString()
