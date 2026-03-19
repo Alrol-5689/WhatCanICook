@@ -43,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun actions() {
+        // se pone a escuchar cuándo se hace click -> onClick(v: View)
         binding.loginButton.setOnClickListener {
             val email = binding.emailInput.text.toString()
             val password = binding.passwordInput.text.toString()
