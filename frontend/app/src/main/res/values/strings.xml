@@ -23,5 +23,6 @@
     <string name="a_adir_amigos">Añadir amigos</string>
     <string name="subir_receta">Subir receta</string>
     <string name="descripcion_de_la_receta">Descripción de la receta</string>
-    <string name="titulo_receta">Título receta</string>
+    <string name="ingredientes">Ingredientes</string>
+    <string name="pasos">Pasos</string>
 </resources>
