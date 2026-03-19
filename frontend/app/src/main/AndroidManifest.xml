@@ -18,9 +18,6 @@
             android:name=".ui.recipes.RecipeDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.recipes.RecipesActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.register.RegisterActivity"
             android:exported="false" />
         <activity
