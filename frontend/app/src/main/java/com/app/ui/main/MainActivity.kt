@@ -21,8 +21,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = ActivityMainBinding.inflate(layoutInflater) // Crea vista desde XML
+        setContentView(binding.root) // -> "Esta es la pantalla que quiero mostrar"
 
         // Creamos el adapter y le pasamos lo que debe hacer cuando se pulsa una receta
         recipeAdapter = RecipeAdapter { recipeId ->

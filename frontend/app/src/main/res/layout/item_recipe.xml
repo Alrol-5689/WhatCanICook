@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/textTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/titulo_receta"
+        tools:text="Super pollo con nata"
         android:textStyle="bold"
         android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/descripcion_de_la_receta"
+        tools:text="Esta es una my rápida forma de hacer pollo con nata."
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/textTitle"
         app:layout_constraintStart_toStartOf="parent"

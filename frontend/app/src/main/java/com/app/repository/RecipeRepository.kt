@@ -6,14 +6,22 @@ import com.app.dto.request.CreateRecipeRequest
 import com.app.network.RecipeApi
 import retrofit2.Call
 
+// Este repository actúa como intermediario entre el ViewModel y Retrofit.
+// Importante: los métodos devuelven Call<T>, no los datos directamente.
+// Eso significa que aquí NO obtenemos resultados, solo preparamos la llamada HTTP.
 class RecipeRepository(private val recipeApi: RecipeApi) {
 
     fun getPublicRecipes(): Call<List<RecipeSummaryDto>> {
         return recipeApi.getPublicRecipes()
     }
 
+    // Esta función NO hace la llamada HTTP todavía.
+    // Solo devuelve un objeto Call, que es como "una llamada preparada" (un botón).
+    // La llamada real se ejecuta cuando en el ViewModel se usa .enqueue(...)
     fun getRecipeById(id: Long): Call<RecipeDetailDto> {
-        return recipeApi.getRecipeById(id)
+        // Aquí simplemente delegamos en Retrofit (RecipeApi)
+        // Retrofit construye la petición HTTP pero NO la ejecuta aún
+        return recipeApi.getRecipeById(id) // devuelve un objeto Call (petición preparada)
     }
 
     fun searchRecipes(title: String): Call<List<RecipeSummaryDto>> {
