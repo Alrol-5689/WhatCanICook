@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
@@ -49,6 +50,10 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!--
+    android:layout_gravity="start" android:layout_gravity="start"
+    esto le dice que es un menú lateral y salga por la izquierda
+    -->
     <LinearLayout
         android:id="@+id/drawerMenu"
         android:layout_width="320dp"

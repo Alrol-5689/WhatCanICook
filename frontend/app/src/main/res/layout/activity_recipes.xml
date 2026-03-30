@@ -5,6 +5,6 @@
     android:id="@+id/recipes"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.recipes.RecipesActivity">
+    tools:context=".ui.main.MainActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>
