@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.app.ui.login.LoginFragment"
+        android:label="Login"
+        tools:layout="@layout/activity_login">
+        <action
+            android:id="@+id/action_login_to_feed"
+            app:destination="@id/feedFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_login_to_register"
+            app:destination="@id/registerFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.app.ui.register.RegisterFragment"
+        android:label="Register"
+        tools:layout="@layout/activity_register" />
+
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.app.ui.main.FeedFragment"
+        android:label="Feed"
+        tools:layout="@layout/item_recipe" />
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.app.ui.main.FavoritesFragment"
+        android:label="Favoritos" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.app.ui.main.ProfileFragment"
+        android:label="Perfil" />
+
+</navigation>

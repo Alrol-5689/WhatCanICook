@@ -1,0 +1,25 @@
+========= RESUMEN DE REFACTORIZACIÓN - RAMA DEVGON =========
+Fecha: 8 de Abril de 2026
+
+Este documento resume los cambios realizados en el frontend (Android) para migrar a una arquitectura moderna y facilitar el desarrollo de la Interfaz de Usuario (UI) sin depender de un backend activo.
+
+Fase 1: Preparación del Entorno
+- Se añadió Jetpack Navigation al proyecto (libs.versions.toml y app/build.gradle.kts) para gestionar la navegación general de la aplicación.
+
+Fase 2: Arquitectura Base (Grafo)
+- Se generó el grafo de navegación visual res/navigation/nav_graph.xml.
+- Se configuró res/menu/bottom_nav_menu.xml para la futura Bottom Navigation Bar.
+- Se vació la lógica pesada de activity_main.xml para convertirlo en un "NavHost" (pantalla de proyección) puro, manteniendo el DrawerMenu (menú lateral) que existía previamente.
+
+Fase 3: Refactorización a Fragments
+- Se eliminaron las viejas LoginActivity.kt y RegisterActivity.kt.
+- Se transformaron en LoginFragment.kt y RegisterFragment.kt, pasando de usar "Intent" a usar "findNavController" de Jetpack Navigation para viajar entre vistas.
+- Se limitó MainActivity.kt a tareas de orquestación (gestionar barras de navegación y DrawerMenu).
+- Se modificó AndroidManifest.xml para reflejar que la app corre puramente sobre MainActivity.
+
+Fase 4: Mocking de Datos (Aislamiento Total del Back)
+- Se interceptó LoginViewModel.kt y MainViewModel.kt. En lugar de hacer llamadas a Retrofit, ahora estos modelos inyectan datos "quemados" falsos. 
+- Al hacer login, el sistema acepta instantáneamente entrando al "FeedFragment", el cual muestra una lista dummy (Macarrones, Salmón...) facilitando el diseño y prueba de RecyclerViews.
+
+Fase 5: Verificación
+- El proyecto fue compilado íntegramente con resultado exitoso (BUILD SUCCESSFUL).

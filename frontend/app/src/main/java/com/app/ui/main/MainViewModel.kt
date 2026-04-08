@@ -21,32 +21,11 @@ class MainViewModel : ViewModel() {
     val error: LiveData<String> = _error
 
     fun loadPublicRecipes() {
-        // getPublicRecipes solo es el botón de la llamada
-        recipeRepository.getPublicRecipes().enqueue( // enqueue ejecuta la llamada
-
-            object : Callback<List<RecipeSummaryDto>> {
-
-                override fun onResponse(
-                    call: Call<List<RecipeSummaryDto>>,
-                    response: Response<List<RecipeSummaryDto>>
-                ) {
-                    if (response.isSuccessful) {
-                        // La llamada HTTP ha respondido correctamente (200 OK)
-                        // Ahora extraemos el body (los datos reales)
-                        _recipes.value = response.body()
-                    } else {
-                        _error.value = "Error al cargar recetas"
-                    }
-                }
-
-                override fun onFailure(
-                    call: Call<List<RecipeSummaryDto>>,
-                    t: Throwable
-                ) {
-                    _error.value = t.message ?: "Error desconocido"
-                }
-
-            }
+        val mockData = listOf(
+            RecipeSummaryDto(1L, "Macarrones gratinados", "Deliciosa pasta de prueba", true, 2L, "ChefGonzalo", "2026-04-08"),
+            RecipeSummaryDto(2L, "Ensalada César", "Mock recipe list", true, 3L, "Tester1", "2026-04-07"),
+            RecipeSummaryDto(3L, "Salmón al Horno", "Pescado", true, 4L, "Tester2", "2026-04-06")
         )
+        _recipes.value = mockData
     }
 }

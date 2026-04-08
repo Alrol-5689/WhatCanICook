@@ -1,0 +1,10 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: whatcanicook-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: whatcanicook
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
