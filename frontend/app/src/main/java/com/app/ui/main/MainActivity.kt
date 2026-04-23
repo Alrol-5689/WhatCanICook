@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout.setDrawerLockMode(
                 if (isAuthScreen) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED
             )
+
+            if (!isAuthScreen) {
+                refreshDrawerHeader()
+            }
         }
 
         // --- Navegación del Drawer Menu ---
@@ -105,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.openDrawer(androidx.core.view.GravityCompat.START)
     }
 
-    private fun refreshDrawerHeader() {
+    fun refreshDrawerHeader() {
         binding.drawerUsername.text = SessionManager.username ?: getString(R.string.unknown_user)
         binding.drawerEmail.text = SessionManager.email ?: ""
     }

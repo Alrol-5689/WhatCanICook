@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.R
 import com.app.databinding.ActivityLoginBinding
+import com.app.ui.main.MainActivity
 import com.app.utils.SessionManager
 import com.google.android.material.snackbar.Snackbar
 
@@ -40,6 +41,7 @@ class LoginFragment : Fragment() {
                 if (user != null) {
                     SessionManager.login(user.id, user.username, user.email)
                 }
+                (requireActivity() as? MainActivity)?.refreshDrawerHeader()
                 findNavController().navigate(R.id.action_login_to_feed)
             }
         }
