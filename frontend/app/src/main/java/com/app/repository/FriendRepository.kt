@@ -1,14 +1,11 @@
 package com.app.repository
 
 import com.app.dto.model.FriendDto
+import com.app.dto.request.FriendRequest
 import com.app.network.FriendApi
 import retrofit2.Call
 
 class FriendRepository(private val friendApi: FriendApi) {
-
-    fun sendFriendRequest(requesterId: Long, receiverId: Long): Call<FriendDto> {
-        return friendApi.sendFriendRequest(requesterId, receiverId)
-    }
 
     fun acceptFriend(id: Long): Call<FriendDto> {
         return friendApi.acceptFriend(id)
@@ -18,7 +15,7 @@ class FriendRepository(private val friendApi: FriendApi) {
         return friendApi.rejectFriend(id)
     }
 
-    fun getUserFriends(userId: Long): Call<List<FriendDto>> {
-        return friendApi.getUserFriends(userId)
-    }
+    fun sendFriendRequest(request: FriendRequest): Call<FriendDto> = friendApi.sendFriendRequest(request)
+
+    fun getPendingRequests(userId: Long): Call<List<FriendDto>> = friendApi.getPendingRequests(userId)
 }

@@ -33,15 +33,15 @@ class FriendsViewModel : ViewModel() {
             return
         }
 
-        friendRepository.getUserFriends(userId).enqueue(object : Callback<List<FriendDto>> {
+        friendRepository.getPendingRequests(userId).enqueue(object : Callback<List<FriendDto>> {
             override fun onResponse(
                 call: Call<List<FriendDto>>,
                 response: Response<List<FriendDto>>
             ) {
                 if (response.isSuccessful) {
                     val items = response.body() ?: emptyList()
-                    _pendingRequests.value = items.filter { it.status == FriendStatus.PENDING && it.receiverId == userId }
-                    _acceptedFriends.value = items.filter { it.status == FriendStatus.ACCEPTED }
+                    _pendingRequests.value = items.filter { it.status == FriendStatus.PENDING }
+                    _acceptedFriends.value = emptyList()
                 } else {
                     _error.value = "Error al cargar amigos"
                 }
@@ -85,4 +85,3 @@ class FriendsViewModel : ViewModel() {
         })
     }
 }
-

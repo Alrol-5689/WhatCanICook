@@ -68,4 +68,10 @@
         android:label="Crear receta"
         tools:layout="@layout/fragment_recipe_create" />
 
+    <fragment
+        android:id="@+id/userSearchFragment"
+        android:name="com.app.ui.users.search.UserSearchFragment"
+        android:label="Buscar usuarios"
+        tools:layout="@layout/fragment_user_search" />
+
 </navigation>

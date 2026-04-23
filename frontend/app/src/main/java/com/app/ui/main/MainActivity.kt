@@ -71,6 +71,11 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.friendsFragment)
         }
 
+        binding.searchUserButton.setOnClickListener {
+            binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
+            navController.navigate(R.id.userSearchFragment)
+        }
+
         binding.uploadRecipeButton.setOnClickListener {
             binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
             navController.navigate(R.id.recipeCreateFragment)
