@@ -3,6 +3,7 @@ package com.whatcanicook.service;
 import com.whatcanicook.dto.model.RecipeSummaryDto;
 import com.whatcanicook.dto.model.RecipeDetailDto;
 import com.whatcanicook.dto.request.CreateRecipeRequest;
+import com.whatcanicook.dto.request.RecipesByIngredientsRequest;
 import com.whatcanicook.mapper.RecipeMapper;
 import com.whatcanicook.model.Ingredient;
 import com.whatcanicook.model.Recipe;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class RecipeService {
@@ -94,5 +96,34 @@ public class RecipeService {
 
         Recipe saved = recipeRepository.save(recipe);
         return recipeMapper.toDetailDto(saved);
+    }
+
+    public List<RecipeSummaryDto> findPublicRecipesByIngredients(RecipesByIngredientsRequest request) {
+        List<String> raw = request.getIngredients() != null ? request.getIngredients() : List.of();
+        List<String> normalized = raw.stream()
+                .map(s -> s == null ? "" : s.trim())
+                .filter(s -> !s.isBlank())
+                .distinct()
+                .toList();
+
+        if (normalized.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> ingredientIds = new ArrayList<>(normalized.size());
+        for (String name : normalized) {
+            var ingredient = ingredientRepository.findFirstByNameIgnoreCaseOrCastellanoIgnoreCase(name, name)
+                    .orElse(null);
+            if (ingredient == null) {
+                // Si un ingrediente no existe, no puede haber recetas que contengan "todos".
+                return List.of();
+            }
+            ingredientIds.add(ingredient.getId());
+        }
+
+        return recipeRepository.findPublicRecipesContainingAllIngredients(ingredientIds, ingredientIds.size())
+                .stream()
+                .map(recipeMapper::toSummaryDto)
+                .toList();
     }
 }

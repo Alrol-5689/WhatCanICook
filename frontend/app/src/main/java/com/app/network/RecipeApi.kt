@@ -3,6 +3,7 @@ package com.app.network
 import com.app.dto.model.RecipeSummaryDto
 import com.app.dto.model.RecipeDetailDto
 import com.app.dto.request.CreateRecipeRequest
+import com.app.dto.request.RecipesByIngredientsRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -26,5 +27,8 @@ interface RecipeApi {
 
     @POST("recipes")
     fun createRecipe(@Body request: CreateRecipeRequest): Call<RecipeDetailDto>
+
+    @POST("recipes/by-ingredients")
+    fun getPublicRecipesByIngredients(@Body request: RecipesByIngredientsRequest): Call<List<RecipeSummaryDto>>
 
 }

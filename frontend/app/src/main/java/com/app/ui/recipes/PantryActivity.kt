@@ -1,5 +1,6 @@
 package com.app.ui.recipes
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -54,8 +55,10 @@ class PantryActivity : AppCompatActivity() {
         }
 
         binding.findRecipesButton.setOnClickListener {
-            viewModel.findRecipes()
-            // Aquí podrías navegar a la pantalla de resultados
+            val ingredients = ArrayList(viewModel.ingredients.value ?: emptyList())
+            val intent = Intent(this, PantryResultsActivity::class.java)
+            intent.putStringArrayListExtra(PantryResultsActivity.EXTRA_INGREDIENTS, ingredients)
+            startActivity(intent)
         }
     }
 
