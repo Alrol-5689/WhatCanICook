@@ -15,6 +15,9 @@ interface RecipeApi {
     @GET("recipes/public")
     fun getPublicRecipes(): Call<List<RecipeSummaryDto>>
 
+    @GET("recipes/user/{userId}")
+    fun getRecipesByUser(@Path("userId") userId: Long): Call<List<RecipeSummaryDto>>
+
     @GET("recipes/{id}")
     fun getRecipeById(@Path("id") id: Long): Call<RecipeDetailDto>
 

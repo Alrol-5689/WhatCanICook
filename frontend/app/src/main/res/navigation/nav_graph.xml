@@ -48,7 +48,7 @@
         android:id="@+id/myRecipesFragment"
         android:name="com.app.ui.main.MyRecipesFragment"
         android:label="Mis recetas"
-        tools:layout="@layout/fragment_placeholder" />
+        tools:layout="@layout/fragment_my_recipes" />
 
     <fragment
         android:id="@+id/friendsFragment"

@@ -15,6 +15,10 @@ class RecipeRepository(private val recipeApi: RecipeApi) {
         return recipeApi.getPublicRecipes()
     }
 
+    fun getRecipesByUser(userId: Long): Call<List<RecipeSummaryDto>> {
+        return recipeApi.getRecipesByUser(userId)
+    }
+
     // Esta función NO hace la llamada HTTP todavía.
     // Solo devuelve un objeto Call, que es como "una llamada preparada" (un botón).
     // La llamada real se ejecuta cuando en el ViewModel se usa .enqueue(...)
