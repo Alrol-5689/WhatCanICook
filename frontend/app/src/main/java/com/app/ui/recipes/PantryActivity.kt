@@ -3,20 +3,26 @@ package com.app.ui.recipes
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.databinding.ActivityPantryBinding
 import com.app.databinding.ItemPantryIngredientBinding
+import com.app.dto.model.IngredientDto
+import com.app.ui.recipes.adapter.IngredientSearchAdapter
 
 class PantryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPantryBinding
     private val viewModel: PantryViewModel by viewModels()
-    private lateinit var adapter: PantryAdapter
+    private lateinit var selectedAdapter: SelectedIngredientAdapter
+    private lateinit var ingredientSearchAdapter: IngredientSearchAdapter
+
+    private var availableIngredients: List<IngredientDto> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +33,8 @@ class PantryActivity : AppCompatActivity() {
         setupRecyclerView()
         setupInputs()
         observarViewModel()
+
+        viewModel.fetchIngredients()
     }
 
     private fun setupToolbar() {
@@ -34,47 +42,72 @@ class PantryActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = PantryAdapter { ingredient ->
-            viewModel.removeIngredient(ingredient)
+        selectedAdapter = SelectedIngredientAdapter { ingredientId ->
+            viewModel.removeIngredient(ingredientId)
         }
         binding.pantryRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.pantryRecyclerView.adapter = adapter
+        binding.pantryRecyclerView.adapter = selectedAdapter
+
+        ingredientSearchAdapter = IngredientSearchAdapter { ingredient ->
+            viewModel.addIngredient(ingredient)
+            binding.editSearchIngredient.text?.clear()
+            binding.rvIngredientSearch.visibility = View.GONE
+        }
+        binding.rvIngredientSearch.layoutManager = LinearLayoutManager(this)
+        binding.rvIngredientSearch.adapter = ingredientSearchAdapter
     }
 
     private fun setupInputs() {
-        // Al pulsar ENTER en el teclado, añade el ingrediente
-        binding.editSearchIngredient.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                val name = binding.editSearchIngredient.text.toString()
-                viewModel.addIngredient(name)
-                binding.editSearchIngredient.text.clear()
-                true
-            } else {
-                false
+        binding.editSearchIngredient.doAfterTextChanged { editable ->
+            val query = editable?.toString()?.trim()?.lowercase().orEmpty()
+            if (query.isEmpty()) {
+                binding.rvIngredientSearch.visibility = View.GONE
+                return@doAfterTextChanged
             }
+
+            val selectedIds = (viewModel.selectedIngredients.value ?: emptyList()).map { it.id }.toSet()
+            val filtered = availableIngredients
+                .asSequence()
+                .filter { it.id !in selectedIds }
+                .filter {
+                    (it.castellano?.lowercase()?.contains(query) == true) ||
+                        it.name.lowercase().contains(query)
+                }
+                .take(25)
+                .toList()
+
+            ingredientSearchAdapter.setIngredients(filtered)
+            binding.rvIngredientSearch.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
         }
 
         binding.findRecipesButton.setOnClickListener {
-            val ingredients = ArrayList(viewModel.ingredients.value ?: emptyList())
+            val ingredientIds = viewModel.getSelectedIngredientIds()
             val intent = Intent(this, PantryResultsActivity::class.java)
-            intent.putStringArrayListExtra(PantryResultsActivity.EXTRA_INGREDIENTS, ingredients)
+            intent.putExtra(PantryResultsActivity.EXTRA_INGREDIENT_IDS, ingredientIds.toLongArray())
             startActivity(intent)
         }
     }
 
     private fun observarViewModel() {
-        viewModel.ingredients.observe(this) { list ->
-            adapter.updateList(list)
+        viewModel.availableIngredients.observe(this) { list ->
+            availableIngredients = list ?: emptyList()
+        }
+
+        viewModel.selectedIngredients.observe(this) { list ->
+            selectedAdapter.updateList(list ?: emptyList())
+        }
+
+        viewModel.error.observe(this) { _ ->
+            // Silencioso: si falla, simplemente no habrá sugerencias.
         }
     }
 
-    // Clase interna para el adaptador de la lista de ingredientes
-    inner class PantryAdapter(private val onRemove: (String) -> Unit) : 
-        RecyclerView.Adapter<PantryAdapter.ViewHolder>() {
+    inner class SelectedIngredientAdapter(private val onRemove: (Long) -> Unit) :
+        RecyclerView.Adapter<SelectedIngredientAdapter.ViewHolder>() {
 
-        private var items: List<String> = emptyList()
+        private var items: List<IngredientDto> = emptyList()
 
-        fun updateList(newList: List<String>) {
+        fun updateList(newList: List<IngredientDto>) {
             items = newList
             notifyDataSetChanged()
         }
@@ -88,8 +121,14 @@ class PantryActivity : AppCompatActivity() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
-            holder.binding.textIngredientName.text = item
-            holder.binding.btnRemoveIngredient.setOnClickListener { onRemove(item) }
+            val spanish = item.castellano?.takeIf { it.isNotBlank() }
+            val english = item.name
+            holder.binding.textIngredientName.text = when {
+                spanish == null -> english
+                spanish.equals(english, ignoreCase = true) -> spanish
+                else -> "$spanish ($english)"
+            }
+            holder.binding.btnRemoveIngredient.setOnClickListener { onRemove(item.id) }
         }
 
         override fun getItemCount(): Int = items.size

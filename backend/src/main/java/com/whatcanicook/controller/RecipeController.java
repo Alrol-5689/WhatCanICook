@@ -3,6 +3,7 @@ package com.whatcanicook.controller;
 import com.whatcanicook.dto.model.RecipeSummaryDto;
 import com.whatcanicook.dto.model.RecipeDetailDto;
 import com.whatcanicook.dto.request.CreateRecipeRequest;
+import com.whatcanicook.dto.request.RecipesByIngredientIdsRequest;
 import com.whatcanicook.dto.request.RecipesByIngredientsRequest;
 import com.whatcanicook.service.RecipeService;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +53,10 @@ public class RecipeController {
     @PostMapping("/by-ingredients")
     public ResponseEntity<List<RecipeSummaryDto>> findByIngredients(@RequestBody RecipesByIngredientsRequest request) {
         return ResponseEntity.ok(recipeService.findPublicRecipesByIngredients(request));
+    }
+
+    @PostMapping("/by-ingredient-ids")
+    public ResponseEntity<List<RecipeSummaryDto>> findByIngredientIds(@RequestBody RecipesByIngredientIdsRequest request) {
+        return ResponseEntity.ok(recipeService.findPublicRecipesByIngredientIds(request));
     }
 }

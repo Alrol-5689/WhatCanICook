@@ -3,6 +3,7 @@ package com.app.repository
 import com.app.dto.model.RecipeDetailDto
 import com.app.dto.model.RecipeSummaryDto
 import com.app.dto.request.CreateRecipeRequest
+import com.app.dto.request.RecipesByIngredientIdsRequest
 import com.app.dto.request.RecipesByIngredientsRequest
 import com.app.network.RecipeApi
 import retrofit2.Call
@@ -39,5 +40,9 @@ class RecipeRepository(private val recipeApi: RecipeApi) {
 
     fun getPublicRecipesByIngredients(request: RecipesByIngredientsRequest): Call<List<RecipeSummaryDto>> {
         return recipeApi.getPublicRecipesByIngredients(request)
+    }
+
+    fun getPublicRecipesByIngredientIds(request: RecipesByIngredientIdsRequest): Call<List<RecipeSummaryDto>> {
+        return recipeApi.getPublicRecipesByIngredientIds(request)
     }
 }

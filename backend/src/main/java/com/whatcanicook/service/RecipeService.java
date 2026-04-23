@@ -3,6 +3,7 @@ package com.whatcanicook.service;
 import com.whatcanicook.dto.model.RecipeSummaryDto;
 import com.whatcanicook.dto.model.RecipeDetailDto;
 import com.whatcanicook.dto.request.CreateRecipeRequest;
+import com.whatcanicook.dto.request.RecipesByIngredientIdsRequest;
 import com.whatcanicook.dto.request.RecipesByIngredientsRequest;
 import com.whatcanicook.mapper.RecipeMapper;
 import com.whatcanicook.model.Ingredient;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 @Service
 public class RecipeService {
@@ -122,6 +123,23 @@ public class RecipeService {
         }
 
         return recipeRepository.findPublicRecipesContainingAllIngredients(ingredientIds, ingredientIds.size())
+                .stream()
+                .map(recipeMapper::toSummaryDto)
+                .toList();
+    }
+
+    public List<RecipeSummaryDto> findPublicRecipesByIngredientIds(RecipesByIngredientIdsRequest request) {
+        List<Long> raw = request.getIngredientIds() != null ? request.getIngredientIds() : List.of();
+        List<Long> normalized = raw.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        if (normalized.isEmpty()) {
+            return List.of();
+        }
+
+        return recipeRepository.findPublicRecipesContainingAllIngredients(normalized, normalized.size())
                 .stream()
                 .map(recipeMapper::toSummaryDto)
                 .toList();

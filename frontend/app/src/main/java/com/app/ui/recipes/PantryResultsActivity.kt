@@ -18,6 +18,7 @@ import retrofit2.Response
 class PantryResultsActivity : AppCompatActivity() {
 
     companion object {
+        const val EXTRA_INGREDIENT_IDS = "ingredient_ids"
         const val EXTRA_INGREDIENTS = "ingredients"
     }
 
@@ -35,8 +36,9 @@ class PantryResultsActivity : AppCompatActivity() {
         setupRecyclerView()
         observeViewModel()
 
-        val ingredients = intent.getStringArrayListExtra(EXTRA_INGREDIENTS) ?: arrayListOf()
-        viewModel.loadRecipes(ingredients)
+        val ingredientIds = intent.getLongArrayExtra(EXTRA_INGREDIENT_IDS)?.toList()
+            ?: emptyList()
+        viewModel.loadRecipes(ingredientIds)
         refreshFavorites()
     }
 

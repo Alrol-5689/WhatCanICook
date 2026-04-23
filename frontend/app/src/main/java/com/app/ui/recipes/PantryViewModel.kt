@@ -3,38 +3,54 @@ package com.app.ui.recipes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.app.dto.model.IngredientDto
+import com.app.network.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PantryViewModel : ViewModel() {
 
-    // Lista observable de ingredientes
-    private val _ingredients = MutableLiveData<List<String>>(mutableListOf())
-    val ingredients: LiveData<List<String>> = _ingredients
+    private val _availableIngredients = MutableLiveData<List<IngredientDto>>()
+    val availableIngredients: LiveData<List<IngredientDto>> = _availableIngredients
 
-    // Añade un ingrediente a la lista (solo si no está vacío y no es duplicado)
-    fun addIngredient(name: String) {
-        val currentList = _ingredients.value?.toMutableList() ?: mutableListOf()
-        val normalizedName = name.trim().lowercase()
+    private val _selectedIngredients = MutableLiveData<List<IngredientDto>>(emptyList())
+    val selectedIngredients: LiveData<List<IngredientDto>> = _selectedIngredients
 
-        if (normalizedName.isNotEmpty() && !currentList.contains(normalizedName)) {
-            currentList.add(normalizedName)
-            _ingredients.value = currentList
-        }
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
+    fun fetchIngredients() {
+        RetrofitClient.ingredientApi.getAllIngredients().enqueue(object : Callback<List<IngredientDto>> {
+            override fun onResponse(
+                call: Call<List<IngredientDto>>,
+                response: Response<List<IngredientDto>>
+            ) {
+                if (response.isSuccessful) {
+                    _availableIngredients.value = response.body() ?: emptyList()
+                } else {
+                    _error.value = "Error al cargar ingredientes"
+                }
+            }
+
+            override fun onFailure(call: Call<List<IngredientDto>>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
     }
 
-    // Elimina un ingrediente de la lista
-    fun removeIngredient(name: String) {
-        val currentList = _ingredients.value?.toMutableList() ?: mutableListOf()
-        if (currentList.remove(name)) {
-            _ingredients.value = currentList
-        }
+    fun addIngredient(ingredient: IngredientDto) {
+        val current = _selectedIngredients.value ?: emptyList()
+        if (current.any { it.id == ingredient.id }) return
+        _selectedIngredients.value = current + ingredient
     }
 
-    // Función para el botón "A COCINAR" (Aquí iría la llamada al servidor más adelante)
-    fun findRecipes() {
-        val ingredientList = _ingredients.value ?: emptyList()
-        if (ingredientList.isNotEmpty()) {
-            // TODO: Llamar al repositorio para buscar recetas con estos ingredientes
-            println("Buscando recetas con: ${ingredientList.joinToString()}")
-        }
+    fun removeIngredient(ingredientId: Long) {
+        val current = _selectedIngredients.value ?: emptyList()
+        _selectedIngredients.value = current.filterNot { it.id == ingredientId }
+    }
+
+    fun getSelectedIngredientIds(): ArrayList<Long> {
+        return ArrayList((_selectedIngredients.value ?: emptyList()).map { it.id })
     }
 }

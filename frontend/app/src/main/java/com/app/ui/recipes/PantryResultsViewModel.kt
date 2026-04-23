@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.app.dto.model.RecipeSummaryDto
-import com.app.dto.request.RecipesByIngredientsRequest
+import com.app.dto.request.RecipesByIngredientIdsRequest
 import com.app.network.RetrofitClient
 import com.app.repository.RecipeRepository
 import retrofit2.Call
@@ -21,14 +21,14 @@ class PantryResultsViewModel : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
 
-    fun loadRecipes(ingredients: List<String>) {
-        val normalized = ingredients.map { it.trim() }.filter { it.isNotBlank() }.distinct()
+    fun loadRecipes(ingredientIds: List<Long>) {
+        val normalized = ingredientIds.filter { it > 0 }.distinct()
         if (normalized.isEmpty()) {
             _recipes.value = emptyList()
             return
         }
 
-        recipeRepository.getPublicRecipesByIngredients(RecipesByIngredientsRequest(normalized))
+        recipeRepository.getPublicRecipesByIngredientIds(RecipesByIngredientIdsRequest(normalized))
             .enqueue(object : Callback<List<RecipeSummaryDto>> {
                 override fun onResponse(
                     call: Call<List<RecipeSummaryDto>>,
@@ -47,4 +47,3 @@ class PantryResultsViewModel : ViewModel() {
             })
     }
 }
-
