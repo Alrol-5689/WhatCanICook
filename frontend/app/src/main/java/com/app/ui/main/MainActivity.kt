@@ -11,6 +11,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.app.R
 import com.app.databinding.ActivityMainBinding
 import com.app.ui.recipes.PantryActivity
+import com.app.utils.SessionManager
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        refreshDrawerHeader()
 
         binding.bottomNav.setupWithNavController(navController)
 
@@ -72,6 +75,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.logoutButton.setOnClickListener {
             binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
+            SessionManager.logout()
             navController.navigate(
                 R.id.loginFragment,
                 null,
@@ -82,7 +86,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshDrawerHeader()
+    }
+
     fun openDrawer() {
         binding.drawerLayout.openDrawer(androidx.core.view.GravityCompat.START)
+    }
+
+    private fun refreshDrawerHeader() {
+        binding.drawerUsername.text = SessionManager.username ?: getString(R.string.unknown_user)
+        binding.drawerEmail.text = SessionManager.email ?: ""
     }
 }

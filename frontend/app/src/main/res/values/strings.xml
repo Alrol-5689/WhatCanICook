@@ -26,6 +26,7 @@
     <string name="ingredientes">Ingredientes</string>
     <string name="pasos">Pasos</string>
     <string name="feed_recetas">RECETAS PARA TI</string>
+    <string name="no_tienes_recetas_a_n">No tienes recetas aún.</string>
 
     <!-- Perfil -->
     <string name="mi_perfil">Mi Perfil</string>

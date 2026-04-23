@@ -16,10 +16,8 @@ class LoginViewModel : ViewModel() {
     // Se crea AuthRepository
     // Conectamso LoginViewModel → AuthRepository → AuthApi
     private val authRepository = AuthRepository(RetrofitClient.authApi)
-    private val _loginResponse = MutableLiveData<AuthResponse>()
-    // _loginResponse -> Es privada y modificable. Solo el ViewModel puede cambiarla.
-    val loginResponse: LiveData<AuthResponse> = _loginResponse
-    // loginResponse -> Es pública pero solo de lectura.
+    private val _loginResponse = MutableLiveData<AuthResponse?>()
+    val loginResponse: LiveData<AuthResponse?> = _loginResponse
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
@@ -29,8 +27,21 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-        // MOCK RESPONSE PARA DESARROLLO UI
-        val authResponse = AuthResponse(true, "Mock OK", null)
-        _loginResponse.value = authResponse
+        val request = LoginRequest(email.trim(), password.trim())
+
+        authRepository.login(request).enqueue(object : Callback<AuthResponse> {
+            override fun onResponse(call: Call<AuthResponse>, response: Response<AuthResponse>) {
+                val authResponse = response.body()
+                if (response.isSuccessful && authResponse?.success == true) {
+                    _loginResponse.value = authResponse
+                } else {
+                    _errorMessage.value = authResponse?.message ?: "Credenciales incorrectas"
+                }
+            }
+
+            override fun onFailure(call: Call<AuthResponse>, t: Throwable) {
+                _errorMessage.value = "Error de conexión: ${t.message}"
+            }
+        })
     }
 }

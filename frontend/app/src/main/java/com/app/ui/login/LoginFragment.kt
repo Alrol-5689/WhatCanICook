@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.R
 import com.app.databinding.ActivityLoginBinding
+import com.app.utils.SessionManager
 import com.google.android.material.snackbar.Snackbar
 
 class LoginFragment : Fragment() {
@@ -33,9 +34,14 @@ class LoginFragment : Fragment() {
 
     private fun viewModelObserver() {
         viewModel.loginResponse.observe(viewLifecycleOwner) { authResponse ->
-            Snackbar.make(binding.root, "Login correcto", Snackbar.LENGTH_SHORT).show()
-            // In a real app we save the userId to SharedPreferences
-            findNavController().navigate(R.id.action_login_to_feed)
+            if (authResponse?.success == true) {
+                Snackbar.make(binding.root, "Login correcto", Snackbar.LENGTH_SHORT).show()
+                val user = authResponse.user
+                if (user != null) {
+                    SessionManager.login(user.id, user.username, user.email)
+                }
+                findNavController().navigate(R.id.action_login_to_feed)
+            }
         }
         viewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()

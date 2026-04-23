@@ -36,7 +36,7 @@
         android:id="@+id/favoritesFragment"
         android:name="com.app.ui.main.FavoritesFragment"
         android:label="Favoritos"
-        tools:layout="@layout/fragment_placeholder" />
+        tools:layout="@layout/fragment_favorites" />
 
     <fragment
         android:id="@+id/profileFragment"
