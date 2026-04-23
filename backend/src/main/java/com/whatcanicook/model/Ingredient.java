@@ -36,4 +36,7 @@ public class Ingredient {
     @JsonProperty("fiber_100g")
     @Column(name = "fiber_100g")
     private Double fiber100g;
+
+    @Column(length = 255)
+    private String castellano;
 }

@@ -16,7 +16,7 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 //    delete()
 //    count()
 
-    // Buscar ingredientes por nombre (contiene, ignore case)
-    List<Ingredient> findByNameContainingIgnoreCase(String name);
+    // Buscar ingredientes por nombre original o nombre en castellano.
+    List<Ingredient> findByNameContainingIgnoreCaseOrCastellanoContainingIgnoreCase(String name, String castellano);
 
 }

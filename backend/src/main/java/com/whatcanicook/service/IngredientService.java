@@ -28,7 +28,7 @@ public class IngredientService {
             return getAllIngredients();
         }
 
-        return ingredientRepository.findByNameContainingIgnoreCase(name)
+        return ingredientRepository.findByNameContainingIgnoreCaseOrCastellanoContainingIgnoreCase(name, name)
                 .stream()
                 .map(this::mapToDto)
                 .toList();
@@ -41,7 +41,8 @@ public class IngredientService {
                 ingredient.getCarbs100g(),
                 ingredient.getProtein100g(),
                 ingredient.getFat100g(),
-                ingredient.getFiber100g()
+                ingredient.getFiber100g(),
+                ingredient.getCastellano()
         );
     }
 }

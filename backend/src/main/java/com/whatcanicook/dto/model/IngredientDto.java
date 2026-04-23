@@ -20,4 +20,6 @@ public class IngredientDto {
     private Double fat100g;
 
     private Double fiber100g;
+
+    private String castellano;
 }

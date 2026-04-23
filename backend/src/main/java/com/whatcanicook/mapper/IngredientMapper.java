@@ -15,7 +15,8 @@ public class IngredientMapper {
                 ingredient.getCarbs100g(),
                 ingredient.getProtein100g(),
                 ingredient.getFat100g(),
-                ingredient.getFiber100g()
+                ingredient.getFiber100g(),
+                ingredient.getCastellano()
         );
     }
 }
