@@ -33,6 +33,10 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.menuButton.setOnClickListener {
+            (requireActivity() as MainActivity).openDrawer()
+        }
+
         setupRecyclerView()
         observeViewModel()
 

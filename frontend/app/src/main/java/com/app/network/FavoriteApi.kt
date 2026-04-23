@@ -15,7 +15,7 @@ interface FavoriteApi {
     @POST("favorites")
     fun addFavorite(@Body request: FavoriteRecipeRequest): Call<FavoriteRecipeDto>
 
-    @GET("favorites/user/{userId}")
+    @GET("favorites/{userId}")
     fun getUserFavorites(@Path("userId") userId: Long): Call<List<FavoriteRecipeDto>>
 
     @DELETE("favorites")

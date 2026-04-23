@@ -37,7 +37,10 @@ class MainActivity : AppCompatActivity() {
             val isMainScreen =
                 destination.id == R.id.feedFragment ||
                     destination.id == R.id.favoritesFragment ||
-                    destination.id == R.id.profileFragment
+                    destination.id == R.id.profileFragment ||
+                    destination.id == R.id.myRecipesFragment ||
+                    destination.id == R.id.friendsFragment ||
+                    destination.id == R.id.uploadRecipeFragment
 
             binding.bottomNav.visibility = if (isMainScreen) View.VISIBLE else View.GONE
             binding.drawerLayout.setDrawerLockMode(

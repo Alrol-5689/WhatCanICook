@@ -34,6 +34,10 @@ class FriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.menuButton.setOnClickListener {
+            (requireActivity() as MainActivity).openDrawer()
+        }
+
         if (!SessionManager.isLoggedIn()) {
             Snackbar.make(binding.root, "Haz login para ver tus amigos", Snackbar.LENGTH_SHORT).show()
             return
