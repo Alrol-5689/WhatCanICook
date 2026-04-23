@@ -11,6 +11,8 @@ import com.whatcanicook.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -61,6 +63,23 @@ public class FriendService {
         return friendMapper.toDto(friendRepository.save(friendRequest));
     }
 
+    public List<FriendDto> getAcceptedFriends(Long userId) {
+        List<Friend> sentAccepted = friendRepository.findByRequesterIdAndStatus(userId, FriendStatus.ACCEPTED);
+        List<Friend> receivedAccepted = friendRepository.findByReceiverIdAndStatus(userId, FriendStatus.ACCEPTED);
+
+        List<FriendDto> friends = new ArrayList<>();
+        friends.addAll(sentAccepted.stream().map(friendMapper::toDto).toList());
+        friends.addAll(receivedAccepted.stream().map(friendMapper::toDto).toList());
+
+        return friends.stream()
+                .sorted(Comparator.comparing(friend ->
+                        friend.getRequesterId().equals(userId)
+                                ? friend.getReceiverUsername().toLowerCase()
+                                : friend.getRequesterUsername().toLowerCase()
+                ))
+                .toList();
+    }
+
     public List<FriendDto> getPendingRequests(Long userId) {
         return friendRepository.findByReceiverIdAndStatus(userId, FriendStatus.PENDING)
                 .stream()
@@ -82,5 +101,20 @@ public class FriendService {
 
         friend.setStatus(FriendStatus.REJECTED);
         return friendMapper.toDto(friendRepository.save(friend));
+    }
+
+    public void removeFriendship(Long userId, Long friendUserId) {
+        Friend relation = friendRepository
+                .findByRequesterIdAndReceiverIdOrRequesterIdAndReceiverId(
+                        userId, friendUserId,
+                        friendUserId, userId
+                )
+                .orElseThrow(() -> new IllegalArgumentException("Relación no encontrada"));
+
+        if (relation.getStatus() != FriendStatus.ACCEPTED) {
+            throw new IllegalArgumentException("Solo se puede eliminar una amistad aceptada");
+        }
+
+        friendRepository.delete(relation);
     }
 }

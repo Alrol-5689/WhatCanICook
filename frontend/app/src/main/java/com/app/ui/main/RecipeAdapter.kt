@@ -3,6 +3,7 @@ package com.app.ui.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.R
@@ -10,16 +11,24 @@ import com.app.dto.model.RecipeSummaryDto
 
 class RecipeAdapter(
     // Recibimos una función que se ejecutará cuando el usuario pulse una receta
-    private val onRecipeClick: (Long) -> Unit
+    private val onRecipeClick: (Long) -> Unit,
+    private val onFavoriteToggle: (Long, Boolean) -> Unit
 ) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
     // Lista de recetas que se van a mostrar en el RecyclerView
     private var recipes: List<RecipeSummaryDto> = emptyList()
+    private val favoriteRecipeIds: MutableSet<Long> = mutableSetOf()
 
     // Actualiza la lista y refresca la UI
     fun setRecipes(recipes: List<RecipeSummaryDto>) {
         this.recipes = recipes
         notifyDataSetChanged() // -> más adelante lo hacemos con DiffUtil / ListAdapter
+    }
+
+    fun setFavoriteRecipeIds(ids: Set<Long>) {
+        favoriteRecipeIds.clear()
+        favoriteRecipeIds.addAll(ids)
+        notifyDataSetChanged()
     }
 
     // Se crea la vista de cada item (item_recipe.xml)
@@ -41,9 +50,21 @@ class RecipeAdapter(
             recipe.username
         )
 
+        val isFavorite = favoriteRecipeIds.contains(recipe.id)
+        holder.favoriteButton.setImageResource(
+            if (isFavorite) android.R.drawable.btn_star_big_on else android.R.drawable.btn_star_big_off
+        )
+
         // Detectamos click en la fila
         holder.itemView.setOnClickListener {
             onRecipeClick(recipe.id)
+        }
+
+        holder.favoriteButton.setOnClickListener {
+            val nowFavorite = !favoriteRecipeIds.contains(recipe.id)
+            if (nowFavorite) favoriteRecipeIds.add(recipe.id) else favoriteRecipeIds.remove(recipe.id)
+            notifyItemChanged(position)
+            onFavoriteToggle(recipe.id, nowFavorite)
         }
     }
 
@@ -55,5 +76,6 @@ class RecipeAdapter(
         val textTitle: TextView = itemView.findViewById(R.id.textTitle)
         val textDescription: TextView = itemView.findViewById(R.id.textDescription)
         val textUsername: TextView = itemView.findViewById(R.id.textUsername)
+        val favoriteButton: ImageButton = itemView.findViewById(R.id.favoriteButton)
     }
 }

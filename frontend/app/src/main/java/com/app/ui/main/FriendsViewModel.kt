@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.app.dto.model.FriendDto
-import com.app.dto.model.FriendStatus
 import com.app.network.RetrofitClient
 import com.app.repository.FriendRepository
 import retrofit2.Call
@@ -39,9 +38,24 @@ class FriendsViewModel : ViewModel() {
                 response: Response<List<FriendDto>>
             ) {
                 if (response.isSuccessful) {
-                    val items = response.body() ?: emptyList()
-                    _pendingRequests.value = items.filter { it.status == FriendStatus.PENDING }
-                    _acceptedFriends.value = emptyList()
+                    _pendingRequests.value = response.body() ?: emptyList()
+                } else {
+                    _error.value = "Error al cargar solicitudes pendientes"
+                }
+            }
+
+            override fun onFailure(call: Call<List<FriendDto>>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
+
+        friendRepository.getAcceptedFriends(userId).enqueue(object : Callback<List<FriendDto>> {
+            override fun onResponse(
+                call: Call<List<FriendDto>>,
+                response: Response<List<FriendDto>>
+            ) {
+                if (response.isSuccessful) {
+                    _acceptedFriends.value = response.body() ?: emptyList()
                 } else {
                     _error.value = "Error al cargar amigos"
                 }
@@ -80,6 +94,25 @@ class FriendsViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<FriendDto>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
+    }
+
+    fun removeFriendship(userId: Long, friendUserId: Long) {
+        friendRepository.removeFriendship(userId, friendUserId).enqueue(object : Callback<com.app.dto.response.ApiMessageResponse> {
+            override fun onResponse(
+                call: Call<com.app.dto.response.ApiMessageResponse>,
+                response: Response<com.app.dto.response.ApiMessageResponse>
+            ) {
+                if (response.isSuccessful) {
+                    _actionDone.value = Unit
+                } else {
+                    _error.value = "Error al eliminar la amistad"
+                }
+            }
+
+            override fun onFailure(call: Call<com.app.dto.response.ApiMessageResponse>, t: Throwable) {
                 _error.value = t.message ?: "Error de conexión"
             }
         })

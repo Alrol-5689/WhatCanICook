@@ -2,6 +2,7 @@ package com.whatcanicook.controller;
 
 import com.whatcanicook.dto.model.FriendDto;
 import com.whatcanicook.dto.request.FriendRequest;
+import com.whatcanicook.dto.response.ApiMessageResponse;
 import com.whatcanicook.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,11 @@ public class FriendController {
         return ResponseEntity.ok(friendService.getPendingRequests(userId));
     }
 
+    @GetMapping("/accepted/{userId}")
+    public ResponseEntity<List<FriendDto>> getAcceptedFriends(@PathVariable Long userId) {
+        return ResponseEntity.ok(friendService.getAcceptedFriends(userId));
+    }
+
     @PatchMapping("/{friendId}/accept")
     public ResponseEntity<FriendDto> acceptRequest(@PathVariable Long friendId) {
         return ResponseEntity.ok(friendService.acceptRequest(friendId));
@@ -34,5 +40,12 @@ public class FriendController {
     @PatchMapping("/{friendId}/reject")
     public ResponseEntity<FriendDto> rejectRequest(@PathVariable Long friendId) {
         return ResponseEntity.ok(friendService.rejectRequest(friendId));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<ApiMessageResponse> removeFriendship(@RequestParam Long userId,
+                                                               @RequestParam Long friendUserId) {
+        friendService.removeFriendship(userId, friendUserId);
+        return ResponseEntity.ok(new ApiMessageResponse(true, "Amistad eliminada"));
     }
 }

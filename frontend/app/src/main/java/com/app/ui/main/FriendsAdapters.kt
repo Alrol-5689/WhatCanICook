@@ -72,4 +72,3 @@ class FriendsAdapter(
         val username: TextView = itemView.findViewById(R.id.textUsername)
     }
 }
-

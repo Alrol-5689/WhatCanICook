@@ -24,10 +24,21 @@
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/favoriteButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Super pollo con nata" />
+
+        <ImageButton
+            android:id="@+id/favoriteButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/favoritas"
+            android:src="@android:drawable/btn_star_big_off"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/black" />
 
         <View
             android:id="@+id/orangeIndicator"

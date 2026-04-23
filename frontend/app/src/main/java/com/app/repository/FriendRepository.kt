@@ -2,6 +2,7 @@ package com.app.repository
 
 import com.app.dto.model.FriendDto
 import com.app.dto.request.FriendRequest
+import com.app.dto.response.ApiMessageResponse
 import com.app.network.FriendApi
 import retrofit2.Call
 
@@ -18,4 +19,9 @@ class FriendRepository(private val friendApi: FriendApi) {
     fun sendFriendRequest(request: FriendRequest): Call<FriendDto> = friendApi.sendFriendRequest(request)
 
     fun getPendingRequests(userId: Long): Call<List<FriendDto>> = friendApi.getPendingRequests(userId)
+
+    fun getAcceptedFriends(userId: Long): Call<List<FriendDto>> = friendApi.getAcceptedFriends(userId)
+
+    fun removeFriendship(userId: Long, friendUserId: Long): Call<ApiMessageResponse> =
+        friendApi.removeFriendship(userId, friendUserId)
 }

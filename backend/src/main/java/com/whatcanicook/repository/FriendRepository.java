@@ -17,4 +17,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     // comprobar si ya existe una relación entre dos usuarios
     Optional<Friend> findByRequesterIdAndReceiverId(Long requesterId, Long receiverId);
+
+    Optional<Friend> findByRequesterIdAndReceiverIdOrRequesterIdAndReceiverId(
+            Long requesterId1, Long receiverId1,
+            Long requesterId2, Long receiverId2
+    );
 }
