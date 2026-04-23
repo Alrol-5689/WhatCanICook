@@ -21,11 +21,21 @@ class MainViewModel : ViewModel() {
     val error: LiveData<String> = _error
 
     fun loadPublicRecipes() {
-        val mockData = listOf(
-            RecipeSummaryDto(1L, "Macarrones gratinados", "Deliciosa pasta de prueba", true, 2L, "ChefGonzalo", "2026-04-08"),
-            RecipeSummaryDto(2L, "Ensalada César", "Mock recipe list", true, 3L, "Tester1", "2026-04-07"),
-            RecipeSummaryDto(3L, "Salmón al Horno", "Pescado", true, 4L, "Tester2", "2026-04-06")
-        )
-        _recipes.value = mockData
+        recipeRepository.getPublicRecipes().enqueue(object : Callback<List<RecipeSummaryDto>> {
+            override fun onResponse(
+                call: Call<List<RecipeSummaryDto>>,
+                response: Response<List<RecipeSummaryDto>>
+            ) {
+                if (response.isSuccessful) {
+                    _recipes.value = response.body() ?: emptyList()
+                } else {
+                    _error.value = "Error al cargar recetas"
+                }
+            }
+
+            override fun onFailure(call: Call<List<RecipeSummaryDto>>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
     }
 }
