@@ -54,7 +54,7 @@
         android:id="@+id/friendsFragment"
         android:name="com.app.ui.main.FriendsFragment"
         android:label="Amigos"
-        tools:layout="@layout/fragment_placeholder" />
+        tools:layout="@layout/fragment_friends" />
 
     <fragment
         android:id="@+id/uploadRecipeFragment"

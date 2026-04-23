@@ -27,6 +27,12 @@
     <string name="pasos">Pasos</string>
     <string name="feed_recetas">RECETAS PARA TI</string>
     <string name="no_tienes_recetas_a_n">No tienes recetas aún.</string>
+    <string name="solicitudes_pendientes">Solicitudes pendientes</string>
+    <string name="mis_amigos">Mis amigos</string>
+    <string name="no_tienes_solicitudes_pendientes">No tienes solicitudes pendientes</string>
+    <string name="todavia_no_tienes_amigos">Todavía no tienes amigos</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="rechazar">Rechazar</string>
 
     <!-- Perfil -->
     <string name="mi_perfil">Mi Perfil</string>

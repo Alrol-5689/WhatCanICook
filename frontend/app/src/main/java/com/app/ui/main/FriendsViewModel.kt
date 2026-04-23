@@ -1,0 +1,88 @@
+package com.app.ui.main
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.app.dto.model.FriendDto
+import com.app.dto.model.FriendStatus
+import com.app.network.RetrofitClient
+import com.app.repository.FriendRepository
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class FriendsViewModel : ViewModel() {
+
+    private val friendRepository = FriendRepository(RetrofitClient.friendApi)
+
+    private val _pendingRequests = MutableLiveData<List<FriendDto>>()
+    val pendingRequests: LiveData<List<FriendDto>> = _pendingRequests
+
+    private val _acceptedFriends = MutableLiveData<List<FriendDto>>()
+    val acceptedFriends: LiveData<List<FriendDto>> = _acceptedFriends
+
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
+    private val _actionDone = MutableLiveData<Unit>()
+    val actionDone: LiveData<Unit> = _actionDone
+
+    fun loadFriends(userId: Long) {
+        if (userId == -1L) {
+            _error.value = "Usuario no válido"
+            return
+        }
+
+        friendRepository.getUserFriends(userId).enqueue(object : Callback<List<FriendDto>> {
+            override fun onResponse(
+                call: Call<List<FriendDto>>,
+                response: Response<List<FriendDto>>
+            ) {
+                if (response.isSuccessful) {
+                    val items = response.body() ?: emptyList()
+                    _pendingRequests.value = items.filter { it.status == FriendStatus.PENDING && it.receiverId == userId }
+                    _acceptedFriends.value = items.filter { it.status == FriendStatus.ACCEPTED }
+                } else {
+                    _error.value = "Error al cargar amigos"
+                }
+            }
+
+            override fun onFailure(call: Call<List<FriendDto>>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
+    }
+
+    fun acceptFriend(friendId: Long) {
+        friendRepository.acceptFriend(friendId).enqueue(object : Callback<FriendDto> {
+            override fun onResponse(call: Call<FriendDto>, response: Response<FriendDto>) {
+                if (response.isSuccessful) {
+                    _actionDone.value = Unit
+                } else {
+                    _error.value = "Error al aceptar la solicitud"
+                }
+            }
+
+            override fun onFailure(call: Call<FriendDto>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
+    }
+
+    fun rejectFriend(friendId: Long) {
+        friendRepository.rejectFriend(friendId).enqueue(object : Callback<FriendDto> {
+            override fun onResponse(call: Call<FriendDto>, response: Response<FriendDto>) {
+                if (response.isSuccessful) {
+                    _actionDone.value = Unit
+                } else {
+                    _error.value = "Error al rechazar la solicitud"
+                }
+            }
+
+            override fun onFailure(call: Call<FriendDto>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
+    }
+}
+
