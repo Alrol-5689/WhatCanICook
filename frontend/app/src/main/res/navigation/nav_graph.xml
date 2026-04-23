@@ -62,4 +62,10 @@
         android:label="Subir receta"
         tools:layout="@layout/fragment_placeholder" />
 
+    <fragment
+        android:id="@+id/recipeCreateFragment"
+        android:name="com.app.ui.recipes.create.RecipeCreateFragment"
+        android:label="Crear receta"
+        tools:layout="@layout/fragment_recipe_create" />
+
 </navigation>

@@ -46,4 +46,16 @@
     <string name="buscar_ingrediente_hint">Buscar ingrediente (ej. Pollo)...</string>
     <string name="en_mi_despensa">EN MI DESPENSA</string>
     <string name="btn_cocinar">¡A COCINAR!</string>
+    <string name="titulo_de_la_receta">Título de la receta</string>
+    <string name="descripcion">Descripción</string>
+    <string name="receta_publica">Receta pública</string>
+    <string name="crear_receta">Crear receta</string>
+    <string name="buscar_por_nombre">Buscar por nombre…</string>
+    <string name="ningun_ingrediente_seleccionado">Ningún ingrediente seleccionado</string>
+    <string name="limpiar">Limpiar</string>
+    <string name="anadir_paso">+ Añadir Paso</string>
+    <string name="descripcion_del_paso">Descripción del paso</string>
+    <string name="eliminar_paso">Eliminar paso</string>
+    <string name="buscar_usuarios">Buscar usuarios</string>
+    <string name="find_user">Buscar usuario</string>
 </resources>

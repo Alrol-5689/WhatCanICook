@@ -32,4 +32,8 @@ object RetrofitClient {
         retrofit.create(FriendApi::class.java)
     }
 
+    val ingredientApi: IngredientApi by lazy {
+        retrofit.create(IngredientApi::class.java)
+    }
+
 }

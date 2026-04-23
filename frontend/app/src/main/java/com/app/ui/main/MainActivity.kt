@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.uploadRecipeButton.setOnClickListener {
             binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
-            navController.navigate(R.id.uploadRecipeFragment)
+            navController.navigate(R.id.recipeCreateFragment)
         }
 
         binding.logoutButton.setOnClickListener {

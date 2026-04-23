@@ -4,6 +4,7 @@ data class IngredientDto(
 
     val id: Long,
     val name: String,
+    val castellano: String? = null,
 
     val carbs100g: Double?,
     val protein100g: Double?,
