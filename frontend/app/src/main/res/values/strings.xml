@@ -60,4 +60,5 @@
     <string name="find_user">Buscar usuario</string>
     <string name="no_se_encontraron_usuarios">No se encontraron usuarios</string>
     <string name="usuarios_encontrados">Usuarios encontrados: %1$d</string>
+    <string name="volver">Volver</string>
 </resources>

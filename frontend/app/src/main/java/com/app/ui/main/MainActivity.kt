@@ -40,7 +40,9 @@ class MainActivity : AppCompatActivity() {
                     destination.id == R.id.profileFragment ||
                     destination.id == R.id.myRecipesFragment ||
                     destination.id == R.id.friendsFragment ||
-                    destination.id == R.id.uploadRecipeFragment
+                    destination.id == R.id.uploadRecipeFragment ||
+                    destination.id == R.id.recipeCreateFragment ||
+                    destination.id == R.id.userSearchFragment
 
             binding.bottomNav.visibility = if (isMainScreen) View.VISIBLE else View.GONE
             binding.drawerLayout.setDrawerLockMode(

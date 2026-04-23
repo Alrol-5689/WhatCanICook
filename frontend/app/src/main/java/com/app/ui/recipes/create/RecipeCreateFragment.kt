@@ -29,6 +29,10 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentRecipeCreateBinding.bind(view)
 
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         setupRecyclerView()
         observarViewModel()
         acciones()
@@ -130,4 +134,3 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
         _binding = null
     }
 }
-
