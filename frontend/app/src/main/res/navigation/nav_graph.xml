@@ -35,11 +35,31 @@
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="com.app.ui.main.FavoritesFragment"
-        android:label="Favoritos" />
+        android:label="Favoritos"
+        tools:layout="@layout/fragment_placeholder" />
 
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.app.ui.main.ProfileFragment"
-        android:label="Perfil" />
+        android:label="Perfil"
+        tools:layout="@layout/activity_profile" />
+
+    <fragment
+        android:id="@+id/myRecipesFragment"
+        android:name="com.app.ui.main.MyRecipesFragment"
+        android:label="Mis recetas"
+        tools:layout="@layout/fragment_placeholder" />
+
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.app.ui.main.FriendsFragment"
+        android:label="Amigos"
+        tools:layout="@layout/fragment_placeholder" />
+
+    <fragment
+        android:id="@+id/uploadRecipeFragment"
+        android:name="com.app.ui.main.UploadRecipeFragment"
+        android:label="Subir receta"
+        tools:layout="@layout/fragment_placeholder" />
 
 </navigation>
