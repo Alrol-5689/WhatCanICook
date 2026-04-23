@@ -6,8 +6,10 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_app"
     tools:context=".ui.main.MainActivity">
 
+    <!-- Menú Lateral Modernizado -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
@@ -19,140 +21,149 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/nav_graph" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:menu="@menu/bottom_nav_menu"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!--
-    android:layout_gravity="start" android:layout_gravity="start"
-    esto le dice que es un menú lateral y salga por la izquierda
-    -->
-    <LinearLayout
-        android:id="@+id/drawerMenu"
-        android:layout_width="320dp"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/drawerMenuScroll"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="?attr/colorSurface"
-        android:elevation="8dp"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:background="@color/surface_white"
+        android:fillViewport="true">
 
-        <ImageView
-            android:id="@+id/profileImage"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@string/imagen_de_perfil"
-            android:src="@drawable/ic_profile_placeholder" />
-
-        <TextView
-            android:id="@+id/drawerUsername"
+        <LinearLayout
+            android:id="@+id/drawerMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <TextView
-            android:id="@+id/drawerEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceBodyMedium" />
+            <!-- Cabecera del Perfil con toque Naranja -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="40dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/black"
+                app:strokeWidth="2dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="16dp"
-            android:background="?attr/colorOutline" />
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile_placeholder"
+                    android:contentDescription="@string/imagen_de_perfil" />
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/searchRecipesButton"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="@string/buscar_recetas"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            <TextView
+                android:id="@+id/drawerUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="Nombre de Usuario" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/myRecipesButton"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="@string/mis_recetas"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            <TextView
+                android:id="@+id/drawerEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                tools:text="usuario@email.com" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/favoritesButton"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="@string/favoritas"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            <View
+                android:layout_width="60dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="24dp"
+                android:background="@color/pumpkin_orange" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/friendsButton"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="@string/amigos"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            <!-- Botones de Navegación Estilo Blanco/Negro -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/searchRecipesButton"
+                style="@style/Widget.App.Button.White"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="@string/buscar_recetas"
+                app:icon="@android:drawable/ic_menu_search"
+                app:iconTint="@color/black" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/addFriendsButton"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="@string/a_adir_amigos"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/myRecipesButton"
+                style="@style/Widget.App.Button.White"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="@string/mis_recetas"
+                app:icon="@android:drawable/ic_menu_agenda"
+                app:iconTint="@color/black" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/uploadRecipeButton"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="@string/subir_receta"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/favoritesButton"
+                style="@style/Widget.App.Button.White"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="@string/favoritas"
+                app:icon="@android:drawable/btn_star_big_on"
+                app:iconTint="@color/black" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/logoutButton"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:text="@string/cerrar_sesi_n"
-            android:singleLine="true"
-            android:ellipsize="end" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/friendsButton"
+                style="@style/Widget.App.Button.White"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:text="@string/amigos"
+                app:icon="@android:drawable/ic_menu_myplaces"
+                app:iconTint="@color/black" />
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/uploadRecipeButton"
+                style="@style/Widget.App.Button.White"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:text="@string/subir_receta"
+                app:icon="@android:drawable/ic_menu_upload"
+                app:iconTint="@color/black" />
+
+            <!-- Botón Cerrar Sesión con énfasis Naranja -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/black"
+                android:text="@string/cerrar_sesi_n"
+                android:textColor="@color/white"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

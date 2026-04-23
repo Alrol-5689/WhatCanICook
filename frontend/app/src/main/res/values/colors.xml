@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Colores Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta "WhatCanICook" -->
+    <color name="pumpkin_orange">#FF7518</color>
+    <color name="pumpkin_orange_dark">#D35400</color>
+    <color name="pumpkin_orange_light">#FF9D5C</color>
+
+    <!-- Colores para texto y bordes -->
+    <color name="text_primary">#FF000000</color>
+    <color name="text_secondary">#424242</color>
+    <color name="border_black">#FF000000</color>
+
+    <!-- Fondos y superficies -->
+    <color name="background_app">#FAFAFA</color>
+    <color name="surface_white">#FFFFFFFF</color>
+    <color name="divider">#BDBDBD</color>
 </resources>

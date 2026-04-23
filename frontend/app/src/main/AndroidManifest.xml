@@ -14,9 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WhatCanICook"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".ui.recipes.PantryActivity"
+            android:exported="false" />
+
         <activity
             android:name=".ui.recipes.RecipeDetailActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">

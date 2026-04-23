@@ -1,5 +1,6 @@
 package com.app.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +9,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.app.R
 import com.app.databinding.ActivityMainBinding
+import com.app.ui.recipes.PantryActivity
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -34,6 +36,15 @@ class MainActivity : AppCompatActivity() {
             } else {
                 binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }
+        }
+
+        // --- Navegación del Drawer Menu ---
+
+        binding.searchRecipesButton.setOnClickListener {
+            binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
+            // Abrimos la nueva pantalla de Despensa
+            val intent = Intent(this, PantryActivity::class.java)
+            startActivity(intent)
         }
 
         binding.logoutButton.setOnClickListener {

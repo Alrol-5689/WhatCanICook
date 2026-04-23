@@ -13,7 +13,7 @@
     <string name="cerrar_sesi_n">Cerrar sesión</string>
     <string name="abrir_menu">Abrir menú</string>
     <string name="recipe_author">por %1$s</string>
-    <string name="imagen_de_perfil">imagen_de_perfil</string>
+    <string name="imagen_de_perfil">Imagen de perfil</string>
     <string name="buscar_recetas">Buscar recetas</string>
     <string name="username_with_id">%1$s (id: %2$d)</string>
     <string name="unknown_user">desconocido</string>
@@ -25,4 +25,18 @@
     <string name="descripcion_de_la_receta">Descripción de la receta</string>
     <string name="ingredientes">Ingredientes</string>
     <string name="pasos">Pasos</string>
+    <string name="feed_recetas">RECETAS PARA TI</string>
+
+    <!-- Perfil -->
+    <string name="mi_perfil">Mi Perfil</string>
+    <string name="cambiar_foto">Cambiar foto</string>
+    <string name="nombre_usuario_hint">Nombre de usuario</string>
+    <string name="guardar_cambios">GUARDAR CAMBIOS</string>
+
+    <!-- Despensa -->
+    <string name="mi_despensa">Mi Despensa</string>
+    <string name="pantry_info">Añade los ingredientes que tienes en casa para encontrar recetas a medida.</string>
+    <string name="buscar_ingrediente_hint">Buscar ingrediente (ej. Pollo)...</string>
+    <string name="en_mi_despensa">EN MI DESPENSA</string>
+    <string name="btn_cocinar">¡A COCINAR!</string>
 </resources>
