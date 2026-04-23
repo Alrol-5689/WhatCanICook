@@ -52,7 +52,7 @@ class RecipeAdapter(
 
         val isFavorite = favoriteRecipeIds.contains(recipe.id)
         holder.favoriteButton.setImageResource(
-            if (isFavorite) android.R.drawable.btn_star_big_on else android.R.drawable.btn_star_big_off
+            if (isFavorite) R.drawable.ic_star_filled else R.drawable.ic_star_outline
         )
 
         // Detectamos click en la fila

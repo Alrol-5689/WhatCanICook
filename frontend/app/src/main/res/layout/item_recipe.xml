@@ -35,7 +35,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/favoritas"
-            android:src="@android:drawable/btn_star_big_off"
+            android:src="@drawable/ic_star_outline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/black" />

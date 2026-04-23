@@ -66,7 +66,13 @@ class FeedFragment : Fragment() {
 
     private fun viewModelObserver() {
         viewModel.recipes.observe(viewLifecycleOwner) { recipes ->
-            recipeAdapter.setRecipes(recipes ?: emptyList())
+            val all = recipes ?: emptyList()
+            val visible = if (SessionManager.isLoggedIn()) {
+                all.filterNot { it.userId == SessionManager.userId }
+            } else {
+                all
+            }
+            recipeAdapter.setRecipes(visible)
         }
         viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
             Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()

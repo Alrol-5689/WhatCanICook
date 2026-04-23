@@ -70,7 +70,7 @@ class RecipeDetailActivity : AppCompatActivity() {
 
     private fun setFavoriteIcon() {
         val item = binding.toolbar.menu.findItem(R.id.action_favorite) ?: return
-        item.setIcon(if (isFavorite) android.R.drawable.btn_star_big_on else android.R.drawable.btn_star_big_off)
+        item.setIcon(if (isFavorite) R.drawable.ic_star_filled else R.drawable.ic_star_outline)
     }
 
     private fun refreshFavoriteState() {
