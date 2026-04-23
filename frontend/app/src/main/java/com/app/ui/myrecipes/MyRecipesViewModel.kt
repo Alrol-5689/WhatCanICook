@@ -1,4 +1,4 @@
-package com.app.ui.main
+package com.app.ui.myrecipes
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -41,4 +41,3 @@ class MyRecipesViewModel : ViewModel() {
         )
     }
 }
-

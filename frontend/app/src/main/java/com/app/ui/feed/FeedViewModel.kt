@@ -1,4 +1,4 @@
-package com.app.ui.main
+package com.app.ui.feed
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel : ViewModel() {
+class FeedViewModel : ViewModel() {
 
     private val recipeRepository = RecipeRepository(RetrofitClient.recipeApi)
 

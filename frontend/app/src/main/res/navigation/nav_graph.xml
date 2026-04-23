@@ -28,37 +28,37 @@
 
     <fragment
         android:id="@+id/feedFragment"
-        android:name="com.app.ui.main.FeedFragment"
+        android:name="com.app.ui.feed.FeedFragment"
         android:label="Feed"
         tools:layout="@layout/item_recipe" />
 
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.app.ui.main.FavoritesFragment"
+        android:name="com.app.ui.favorites.FavoritesFragment"
         android:label="Favoritos"
         tools:layout="@layout/fragment_favorites" />
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.app.ui.main.ProfileFragment"
+        android:name="com.app.ui.profile.ProfileFragment"
         android:label="Perfil"
         tools:layout="@layout/activity_profile" />
 
     <fragment
         android:id="@+id/myRecipesFragment"
-        android:name="com.app.ui.main.MyRecipesFragment"
+        android:name="com.app.ui.myrecipes.MyRecipesFragment"
         android:label="Mis recetas"
         tools:layout="@layout/fragment_my_recipes" />
 
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="com.app.ui.main.FriendsFragment"
+        android:name="com.app.ui.friends.FriendsFragment"
         android:label="Amigos"
         tools:layout="@layout/fragment_friends" />
 
     <fragment
         android:id="@+id/uploadRecipeFragment"
-        android:name="com.app.ui.main.UploadRecipeFragment"
+        android:name="com.app.ui.upload.UploadRecipeFragment"
         android:label="Subir receta"
         tools:layout="@layout/fragment_placeholder" />
 

@@ -1,4 +1,4 @@
-package com.app.ui.main
+package com.app.ui.feed
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.databinding.ActivityRecipesBinding
 import com.app.dto.request.FavoriteRecipeRequest
 import com.app.network.RetrofitClient
+import com.app.ui.main.MainActivity
+import com.app.ui.recipes.adapter.RecipeAdapter
 import com.app.ui.recipes.RecipeDetailActivity
 import com.app.utils.SessionManager
 import retrofit2.Call
@@ -22,7 +24,7 @@ class FeedFragment : Fragment() {
 
     private var _binding: ActivityRecipesBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: FeedViewModel by viewModels()
     private lateinit var recipeAdapter: RecipeAdapter
 
     override fun onCreateView(
@@ -35,8 +37,6 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         setupRecyclerView()
         viewModelObserver()

@@ -1,4 +1,4 @@
-package com.app.ui.main
+package com.app.ui.friends
 
 import android.os.Bundle
 import android.view.View
@@ -9,8 +9,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.R
 import com.app.databinding.FragmentFriendsBinding
+import com.app.ui.friends.adapter.FriendsAdapter
+import com.app.ui.friends.adapter.PendingRequestsAdapter
 import com.app.utils.SessionManager
 import com.google.android.material.snackbar.Snackbar
+import com.app.ui.main.MainActivity
 
 class FriendsFragment : Fragment() {
 

@@ -1,4 +1,4 @@
-package com.app.ui.main
+package com.app.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -22,4 +22,3 @@ class ProfileFragment : Fragment() {
         }
     }
 }
-

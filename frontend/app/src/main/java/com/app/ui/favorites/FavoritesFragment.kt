@@ -1,4 +1,4 @@
-package com.app.ui.main
+package com.app.ui.favorites
 
 import androidx.fragment.app.Fragment
 import android.content.Intent
@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.databinding.FragmentFavoritesBinding
 import com.app.dto.request.FavoriteRecipeRequest
 import com.app.network.RetrofitClient
+import com.app.ui.main.MainActivity
+import com.app.ui.recipes.adapter.RecipeAdapter
 import com.app.ui.recipes.RecipeDetailActivity
 import com.app.utils.SessionManager
 import retrofit2.Call

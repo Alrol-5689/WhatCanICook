@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.databinding.ActivityPantryResultsBinding
 import com.app.dto.request.FavoriteRecipeRequest
 import com.app.network.RetrofitClient
-import com.app.ui.main.RecipeAdapter
+import com.app.ui.recipes.adapter.RecipeAdapter
 import com.app.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -117,4 +117,3 @@ class PantryResultsActivity : AppCompatActivity() {
         })
     }
 }
-

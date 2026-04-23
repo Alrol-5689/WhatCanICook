@@ -1,4 +1,4 @@
-package com.app.ui.main
+package com.app.ui.upload
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,4 +20,3 @@ class UploadRecipeFragment : Fragment() {
         view.findViewById<TextView>(R.id.placeholderText).setText(R.string.subir_receta)
     }
 }
-
