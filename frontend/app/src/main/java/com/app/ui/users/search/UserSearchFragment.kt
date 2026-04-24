@@ -29,6 +29,7 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
     private val viewModel: UserSearchViewModel by viewModels()
     private lateinit var userAdapter: UserAdapter
     private var searchRunnable: Runnable? = null
+    private var acceptedFriendUserIds: Set<Long> = emptySet()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,23 +42,33 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
         setupRecyclerView()
         observeViewModel()
         setupLiveSearch()
+        loadAcceptedFriends()
     }
 
     private fun setupRecyclerView() {
         userAdapter = UserAdapter(
-            onAddFriendClick = { user -> sendFriendRequest(user) }
+            currentUserId = SessionManager.userId,
+            onActionClick = { user, isFriend ->
+                if (isFriend) {
+                    removeFriendship(user)
+                } else {
+                    sendFriendRequest(user)
+                }
+            }
         )
 
         binding.recyclerUsers.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerUsers.adapter = userAdapter
+        userAdapter.setFriendUserIds(acceptedFriendUserIds)
     }
 
     private fun observeViewModel() {
         viewModel.users.observe(viewLifecycleOwner) { users ->
-            userAdapter.setUsers(users)
+            val filtered = (users ?: emptyList()).filter { it.id != SessionManager.userId }
+            userAdapter.setUsers(filtered)
             binding.textSearchHint.text =
-                if (users.isNullOrEmpty()) getString(R.string.no_se_encontraron_usuarios)
-                else getString(R.string.usuarios_encontrados, users.size)
+                if (filtered.isEmpty()) getString(R.string.no_se_encontraron_usuarios)
+                else getString(R.string.usuarios_encontrados, filtered.size)
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
@@ -95,6 +106,7 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
                 ) {
                     if (response.isSuccessful) {
                         Toast.makeText(requireContext(), "Solicitud enviada", Toast.LENGTH_SHORT).show()
+                        loadAcceptedFriends()
                     } else {
                         Toast.makeText(requireContext(), "Error al enviar solicitud", Toast.LENGTH_SHORT).show()
                     }
@@ -102,6 +114,67 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
 
                 override fun onFailure(call: Call<com.app.dto.model.FriendDto>, t: Throwable) {
                     Toast.makeText(requireContext(), t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun removeFriendship(user: UserDto) {
+        val currentUserId = SessionManager.userId
+        if (currentUserId == -1L) {
+            Toast.makeText(requireContext(), "Usuario no válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        RetrofitClient.friendApi.removeFriendship(currentUserId, user.id)
+            .enqueue(object : Callback<com.app.dto.response.ApiMessageResponse> {
+                override fun onResponse(
+                    call: Call<com.app.dto.response.ApiMessageResponse>,
+                    response: Response<com.app.dto.response.ApiMessageResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Amistad eliminada", Toast.LENGTH_SHORT).show()
+                        acceptedFriendUserIds = acceptedFriendUserIds - user.id
+                        userAdapter.setFriendUserIds(acceptedFriendUserIds)
+                    } else {
+                        Toast.makeText(requireContext(), "Error al eliminar amistad", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<com.app.dto.response.ApiMessageResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun loadAcceptedFriends() {
+        val userId = SessionManager.userId
+        if (userId == -1L) {
+            acceptedFriendUserIds = emptySet()
+            userAdapter.setFriendUserIds(acceptedFriendUserIds)
+            return
+        }
+
+        RetrofitClient.friendApi.getAcceptedFriends(userId)
+            .enqueue(object : Callback<List<com.app.dto.model.FriendDto>> {
+                override fun onResponse(
+                    call: Call<List<com.app.dto.model.FriendDto>>,
+                    response: Response<List<com.app.dto.model.FriendDto>>
+                ) {
+                    if (response.isSuccessful) {
+                        val friends = response.body() ?: emptyList()
+                        acceptedFriendUserIds = friends.mapNotNull { f ->
+                            when (userId) {
+                                f.requesterId -> f.receiverId
+                                f.receiverId -> f.requesterId
+                                else -> null
+                            }
+                        }.toSet()
+                        userAdapter.setFriendUserIds(acceptedFriendUserIds)
+                    }
+                }
+
+                override fun onFailure(call: Call<List<com.app.dto.model.FriendDto>>, t: Throwable) {
+                    // silenciar: la búsqueda de usuarios sigue funcionando
                 }
             })
     }

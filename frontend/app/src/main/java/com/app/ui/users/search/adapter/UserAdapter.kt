@@ -10,13 +10,20 @@ import com.app.R
 import com.app.dto.model.UserDto
 
 class UserAdapter(
-    private val onAddFriendClick: (UserDto) -> Unit
+    private val currentUserId: Long,
+    private val onActionClick: (user: UserDto, isFriend: Boolean) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     private var users: List<UserDto> = emptyList()
+    private var friendUserIds: Set<Long> = emptySet()
 
     fun setUsers(users: List<UserDto>) {
         this.users = users
+        notifyDataSetChanged()
+    }
+
+    fun setFriendUserIds(friendUserIds: Set<Long>) {
+        this.friendUserIds = friendUserIds
         notifyDataSetChanged()
     }
 
@@ -29,7 +36,20 @@ class UserAdapter(
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val user = users[position]
         holder.textUsername.text = user.username
-        holder.buttonFriendAction.setOnClickListener { onAddFriendClick(user) }
+
+        if (user.id == currentUserId) {
+            holder.buttonFriendAction.text = holder.itemView.context.getString(R.string.tu)
+            holder.buttonFriendAction.isEnabled = false
+            holder.buttonFriendAction.setOnClickListener(null)
+            return
+        }
+
+        val isFriend = friendUserIds.contains(user.id)
+        holder.buttonFriendAction.text = holder.itemView.context.getString(
+            if (isFriend) R.string.eliminar_amistad else R.string.a_adir_amigos
+        )
+        holder.buttonFriendAction.isEnabled = true
+        holder.buttonFriendAction.setOnClickListener { onActionClick(user, isFriend) }
     }
 
     override fun getItemCount(): Int = users.size
@@ -39,4 +59,3 @@ class UserAdapter(
         val buttonFriendAction: Button = itemView.findViewById(R.id.buttonFriendAction)
     }
 }
-
