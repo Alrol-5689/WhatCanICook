@@ -20,8 +20,13 @@ class FriendRepository(private val friendApi: FriendApi) {
 
     fun getPendingRequests(userId: Long): Call<List<FriendDto>> = friendApi.getPendingRequests(userId)
 
+    fun getPendingSent(userId: Long): Call<List<FriendDto>> = friendApi.getPendingSent(userId)
+
     fun getAcceptedFriends(userId: Long): Call<List<FriendDto>> = friendApi.getAcceptedFriends(userId)
 
     fun removeFriendship(userId: Long, friendUserId: Long): Call<ApiMessageResponse> =
         friendApi.removeFriendship(userId, friendUserId)
+
+    fun cancelFriendRequest(requesterId: Long, receiverId: Long): Call<ApiMessageResponse> =
+        friendApi.cancelFriendRequest(requesterId, receiverId)
 }

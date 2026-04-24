@@ -64,6 +64,8 @@
     <string name="find_user">Buscar usuario</string>
     <string name="eliminar_amistad">Eliminar amistad</string>
     <string name="tu">Tú</string>
+    <string name="aceptar_solicitud">Aceptar solicitud</string>
+    <string name="cancelar_solicitud">Cancelar solicitud</string>
     <string name="no_se_encontraron_usuarios">No se encontraron usuarios</string>
     <string name="usuarios_encontrados">Usuarios encontrados: %1$d</string>
     <string name="volver">Volver</string>

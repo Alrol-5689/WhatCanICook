@@ -9,21 +9,41 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.R
 import com.app.dto.model.UserDto
 
+enum class FriendAction {
+    ADD,
+    ACCEPT,
+    CANCEL,
+    REMOVE,
+    NONE
+}
+
 class UserAdapter(
     private val currentUserId: Long,
-    private val onActionClick: (user: UserDto, isFriend: Boolean) -> Unit
+    private val onActionClick: (user: UserDto, action: FriendAction) -> Unit
 ) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     private var users: List<UserDto> = emptyList()
-    private var friendUserIds: Set<Long> = emptySet()
+    private var acceptedFriendUserIds: Set<Long> = emptySet()
+    private var pendingIncomingUserIds: Set<Long> = emptySet()
+    private var pendingOutgoingUserIds: Set<Long> = emptySet()
 
     fun setUsers(users: List<UserDto>) {
         this.users = users
         notifyDataSetChanged()
     }
 
-    fun setFriendUserIds(friendUserIds: Set<Long>) {
-        this.friendUserIds = friendUserIds
+    fun setAcceptedFriendUserIds(friendUserIds: Set<Long>) {
+        this.acceptedFriendUserIds = friendUserIds
+        notifyDataSetChanged()
+    }
+
+    fun setPendingIncomingUserIds(userIds: Set<Long>) {
+        this.pendingIncomingUserIds = userIds
+        notifyDataSetChanged()
+    }
+
+    fun setPendingOutgoingUserIds(userIds: Set<Long>) {
+        this.pendingOutgoingUserIds = userIds
         notifyDataSetChanged()
     }
 
@@ -44,12 +64,22 @@ class UserAdapter(
             return
         }
 
-        val isFriend = friendUserIds.contains(user.id)
-        holder.buttonFriendAction.text = holder.itemView.context.getString(
-            if (isFriend) R.string.eliminar_amistad else R.string.a_adir_amigos
-        )
+        val action = when {
+            acceptedFriendUserIds.contains(user.id) -> FriendAction.REMOVE
+            pendingIncomingUserIds.contains(user.id) -> FriendAction.ACCEPT
+            pendingOutgoingUserIds.contains(user.id) -> FriendAction.CANCEL
+            else -> FriendAction.ADD
+        }
+
+        holder.buttonFriendAction.text = holder.itemView.context.getString(when (action) {
+            FriendAction.REMOVE -> R.string.eliminar_amistad
+            FriendAction.ACCEPT -> R.string.aceptar_solicitud
+            FriendAction.CANCEL -> R.string.cancelar_solicitud
+            FriendAction.ADD -> R.string.a_adir_amigos
+            FriendAction.NONE -> R.string.a_adir_amigos
+        })
         holder.buttonFriendAction.isEnabled = true
-        holder.buttonFriendAction.setOnClickListener { onActionClick(user, isFriend) }
+        holder.buttonFriendAction.setOnClickListener { onActionClick(user, action) }
     }
 
     override fun getItemCount(): Int = users.size

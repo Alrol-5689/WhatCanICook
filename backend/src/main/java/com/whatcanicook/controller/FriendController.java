@@ -27,6 +27,11 @@ public class FriendController {
         return ResponseEntity.ok(friendService.getPendingRequests(userId));
     }
 
+    @GetMapping("/pending-sent/{userId}")
+    public ResponseEntity<List<FriendDto>> getPendingSent(@PathVariable Long userId) {
+        return ResponseEntity.ok(friendService.getPendingSent(userId));
+    }
+
     @GetMapping("/accepted/{userId}")
     public ResponseEntity<List<FriendDto>> getAcceptedFriends(@PathVariable Long userId) {
         return ResponseEntity.ok(friendService.getAcceptedFriends(userId));
@@ -47,5 +52,12 @@ public class FriendController {
                                                                @RequestParam Long friendUserId) {
         friendService.removeFriendship(userId, friendUserId);
         return ResponseEntity.ok(new ApiMessageResponse(true, "Amistad eliminada"));
+    }
+
+    @DeleteMapping("/request")
+    public ResponseEntity<ApiMessageResponse> cancelFriendRequest(@RequestParam Long requesterId,
+                                                                  @RequestParam Long receiverId) {
+        friendService.cancelFriendRequest(requesterId, receiverId);
+        return ResponseEntity.ok(new ApiMessageResponse(true, "Solicitud cancelada"));
     }
 }

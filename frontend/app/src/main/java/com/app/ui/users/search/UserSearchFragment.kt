@@ -15,6 +15,7 @@ import com.app.dto.model.UserDto
 import com.app.dto.request.FriendRequest
 import com.app.network.RetrofitClient
 import com.app.ui.main.MainActivity
+import com.app.ui.users.search.adapter.FriendAction
 import com.app.ui.users.search.adapter.UserAdapter
 import com.app.utils.SessionManager
 import retrofit2.Call
@@ -29,7 +30,10 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
     private val viewModel: UserSearchViewModel by viewModels()
     private lateinit var userAdapter: UserAdapter
     private var searchRunnable: Runnable? = null
+
     private var acceptedFriendUserIds: Set<Long> = emptySet()
+    private var pendingIncomingByUserId: Map<Long, Long> = emptyMap() // otherUserId -> friendId
+    private var pendingOutgoingByUserId: Map<Long, Long> = emptyMap() // otherUserId -> friendId
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,24 +46,28 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
         setupRecyclerView()
         observeViewModel()
         setupLiveSearch()
-        loadAcceptedFriends()
+        loadFriendshipState()
     }
 
     private fun setupRecyclerView() {
         userAdapter = UserAdapter(
             currentUserId = SessionManager.userId,
-            onActionClick = { user, isFriend ->
-                if (isFriend) {
-                    removeFriendship(user)
-                } else {
-                    sendFriendRequest(user)
+            onActionClick = { user, action ->
+                when (action) {
+                    FriendAction.REMOVE -> removeFriendship(user)
+                    FriendAction.ACCEPT -> acceptRequestFrom(user)
+                    FriendAction.CANCEL -> cancelRequestTo(user)
+                    FriendAction.ADD -> sendFriendRequest(user)
+                    FriendAction.NONE -> Unit
                 }
             }
         )
 
         binding.recyclerUsers.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerUsers.adapter = userAdapter
-        userAdapter.setFriendUserIds(acceptedFriendUserIds)
+        userAdapter.setAcceptedFriendUserIds(acceptedFriendUserIds)
+        userAdapter.setPendingIncomingUserIds(pendingIncomingByUserId.keys)
+        userAdapter.setPendingOutgoingUserIds(pendingOutgoingByUserId.keys)
     }
 
     private fun observeViewModel() {
@@ -106,13 +114,67 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
                 ) {
                     if (response.isSuccessful) {
                         Toast.makeText(requireContext(), "Solicitud enviada", Toast.LENGTH_SHORT).show()
-                        loadAcceptedFriends()
+                        loadFriendshipState()
                     } else {
                         Toast.makeText(requireContext(), "Error al enviar solicitud", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<com.app.dto.model.FriendDto>, t: Throwable) {
+                    Toast.makeText(requireContext(), t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun acceptRequestFrom(user: UserDto) {
+        val friendId = pendingIncomingByUserId[user.id]
+        if (friendId == null) {
+            Toast.makeText(requireContext(), "Solicitud no encontrada", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        RetrofitClient.friendApi.acceptFriend(friendId)
+            .enqueue(object : Callback<com.app.dto.model.FriendDto> {
+                override fun onResponse(
+                    call: Call<com.app.dto.model.FriendDto>,
+                    response: Response<com.app.dto.model.FriendDto>
+                ) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Solicitud aceptada", Toast.LENGTH_SHORT).show()
+                        loadFriendshipState()
+                    } else {
+                        Toast.makeText(requireContext(), "Error al aceptar solicitud", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<com.app.dto.model.FriendDto>, t: Throwable) {
+                    Toast.makeText(requireContext(), t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun cancelRequestTo(user: UserDto) {
+        val requesterId = SessionManager.userId
+        if (requesterId == -1L) {
+            Toast.makeText(requireContext(), "Usuario no válido", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        RetrofitClient.friendApi.cancelFriendRequest(requesterId, user.id)
+            .enqueue(object : Callback<com.app.dto.response.ApiMessageResponse> {
+                override fun onResponse(
+                    call: Call<com.app.dto.response.ApiMessageResponse>,
+                    response: Response<com.app.dto.response.ApiMessageResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(requireContext(), "Solicitud cancelada", Toast.LENGTH_SHORT).show()
+                        loadFriendshipState()
+                    } else {
+                        Toast.makeText(requireContext(), "Error al cancelar solicitud", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<com.app.dto.response.ApiMessageResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -133,8 +195,7 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
                 ) {
                     if (response.isSuccessful) {
                         Toast.makeText(requireContext(), "Amistad eliminada", Toast.LENGTH_SHORT).show()
-                        acceptedFriendUserIds = acceptedFriendUserIds - user.id
-                        userAdapter.setFriendUserIds(acceptedFriendUserIds)
+                        loadFriendshipState()
                     } else {
                         Toast.makeText(requireContext(), "Error al eliminar amistad", Toast.LENGTH_SHORT).show()
                     }
@@ -146,13 +207,49 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
             })
     }
 
-    private fun loadAcceptedFriends() {
+    private fun loadFriendshipState() {
         val userId = SessionManager.userId
         if (userId == -1L) {
             acceptedFriendUserIds = emptySet()
-            userAdapter.setFriendUserIds(acceptedFriendUserIds)
+            pendingIncomingByUserId = emptyMap()
+            pendingOutgoingByUserId = emptyMap()
+            userAdapter.setAcceptedFriendUserIds(acceptedFriendUserIds)
+            userAdapter.setPendingIncomingUserIds(pendingIncomingByUserId.keys)
+            userAdapter.setPendingOutgoingUserIds(pendingOutgoingByUserId.keys)
             return
         }
+
+        RetrofitClient.friendApi.getPendingRequests(userId)
+            .enqueue(object : Callback<List<com.app.dto.model.FriendDto>> {
+                override fun onResponse(
+                    call: Call<List<com.app.dto.model.FriendDto>>,
+                    response: Response<List<com.app.dto.model.FriendDto>>
+                ) {
+                    if (response.isSuccessful) {
+                        val incoming = response.body() ?: emptyList()
+                        pendingIncomingByUserId = incoming.associate { it.requesterId to it.id }
+                        userAdapter.setPendingIncomingUserIds(pendingIncomingByUserId.keys)
+                    }
+                }
+
+                override fun onFailure(call: Call<List<com.app.dto.model.FriendDto>>, t: Throwable) {}
+            })
+
+        RetrofitClient.friendApi.getPendingSent(userId)
+            .enqueue(object : Callback<List<com.app.dto.model.FriendDto>> {
+                override fun onResponse(
+                    call: Call<List<com.app.dto.model.FriendDto>>,
+                    response: Response<List<com.app.dto.model.FriendDto>>
+                ) {
+                    if (response.isSuccessful) {
+                        val outgoing = response.body() ?: emptyList()
+                        pendingOutgoingByUserId = outgoing.associate { it.receiverId to it.id }
+                        userAdapter.setPendingOutgoingUserIds(pendingOutgoingByUserId.keys)
+                    }
+                }
+
+                override fun onFailure(call: Call<List<com.app.dto.model.FriendDto>>, t: Throwable) {}
+            })
 
         RetrofitClient.friendApi.getAcceptedFriends(userId)
             .enqueue(object : Callback<List<com.app.dto.model.FriendDto>> {
@@ -169,7 +266,7 @@ class UserSearchFragment : Fragment(R.layout.fragment_user_search) {
                                 else -> null
                             }
                         }.toSet()
-                        userAdapter.setFriendUserIds(acceptedFriendUserIds)
+                        userAdapter.setAcceptedFriendUserIds(acceptedFriendUserIds)
                     }
                 }
 

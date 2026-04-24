@@ -20,6 +20,9 @@ interface FriendApi {
     @GET("friends/pending/{userId}")
     fun getPendingRequests(@Path("userId") userId: Long): Call<List<FriendDto>>
 
+    @GET("friends/pending-sent/{userId}")
+    fun getPendingSent(@Path("userId") userId: Long): Call<List<FriendDto>>
+
     @GET("friends/accepted/{userId}")
     fun getAcceptedFriends(@Path("userId") userId: Long): Call<List<FriendDto>>
 
@@ -33,5 +36,11 @@ interface FriendApi {
     fun removeFriendship(
         @Query("userId") userId: Long,
         @Query("friendUserId") friendUserId: Long
+    ): Call<ApiMessageResponse>
+
+    @DELETE("friends/request")
+    fun cancelFriendRequest(
+        @Query("requesterId") requesterId: Long,
+        @Query("receiverId") receiverId: Long
     ): Call<ApiMessageResponse>
 }

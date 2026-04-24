@@ -87,6 +87,13 @@ public class FriendService {
                 .toList();
     }
 
+    public List<FriendDto> getPendingSent(Long userId) {
+        return friendRepository.findByRequesterIdAndStatus(userId, FriendStatus.PENDING)
+                .stream()
+                .map(friendMapper::toDto)
+                .toList();
+    }
+
     public FriendDto acceptRequest(Long friendId) {
         Friend friend = friendRepository.findById(friendId)
                 .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
@@ -113,6 +120,18 @@ public class FriendService {
 
         if (relation.getStatus() != FriendStatus.ACCEPTED) {
             throw new IllegalArgumentException("Solo se puede eliminar una amistad aceptada");
+        }
+
+        friendRepository.delete(relation);
+    }
+
+    public void cancelFriendRequest(Long requesterId, Long receiverId) {
+        Friend relation = friendRepository
+                .findByRequesterIdAndReceiverId(requesterId, receiverId)
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud no encontrada"));
+
+        if (relation.getStatus() != FriendStatus.PENDING) {
+            throw new IllegalArgumentException("Solo se puede cancelar una solicitud pendiente");
         }
 
         friendRepository.delete(relation);
