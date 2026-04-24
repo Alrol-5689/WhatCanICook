@@ -37,6 +37,10 @@
     <!-- Perfil -->
     <string name="mi_perfil">Mi Perfil</string>
     <string name="cambiar_foto">Cambiar foto</string>
+    <string name="seleccionar_origen_foto">Selecciona una opción</string>
+    <string name="galeria">Galería</string>
+    <string name="camara">Cámara</string>
+    <string name="permiso_camara_denegado">Permiso de cámara denegado</string>
     <string name="nombre_usuario_hint">Nombre de usuario</string>
     <string name="guardar_cambios">GUARDAR CAMBIOS</string>
 
