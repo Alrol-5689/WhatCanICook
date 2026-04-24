@@ -3,6 +3,7 @@ package com.app.ui.main
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import coil.load
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.NavHostFragment
@@ -87,6 +88,11 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.recipeCreateFragment)
         }
 
+        binding.profileImage.setOnClickListener {
+            binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
+            navController.navigate(R.id.profileFragment)
+        }
+
         binding.logoutButton.setOnClickListener {
             binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
             SessionManager.logout()
@@ -112,5 +118,11 @@ class MainActivity : AppCompatActivity() {
     fun refreshDrawerHeader() {
         binding.drawerUsername.text = SessionManager.username ?: getString(R.string.unknown_user)
         binding.drawerEmail.text = SessionManager.email ?: ""
+
+        val imageUrl = SessionManager.getAbsoluteProfileImageUrl()
+        binding.profileImage.load(imageUrl) {
+            placeholder(R.drawable.ic_profile_placeholder)
+            error(R.drawable.ic_profile_placeholder)
+        }
     }
 }
