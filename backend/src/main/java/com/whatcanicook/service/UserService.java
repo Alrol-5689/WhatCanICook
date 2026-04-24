@@ -43,4 +43,13 @@ public class UserService {
                 .map(userMapper::toDto)
                 .toList();
     }
+
+    public UserDto updateProfileImageUrl(Long userId, String profileImageUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        user.setProfileImageUrl(profileImageUrl);
+        User saved = userRepository.save(user);
+        return userMapper.toDto(saved);
+    }
 }
