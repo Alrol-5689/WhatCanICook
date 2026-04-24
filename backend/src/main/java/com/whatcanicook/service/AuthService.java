@@ -47,7 +47,7 @@ public class AuthService {
         return new AuthResponse(
                 true,
                 "Usuario registrado correctamente",
-                new UserDto(user.getId(), user.getUsername(), user.getEmail())
+                new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getProfileImageUrl())
         );
     }
 
@@ -58,7 +58,7 @@ public class AuthService {
                 .map(user -> new AuthResponse(
                         true,
                         "Login correcto",
-                        new UserDto(user.getId(), user.getUsername(), user.getEmail())))
+                        new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getProfileImageUrl())))
                 .orElse(new AuthResponse(
                         false,
                         "Credenciales incorrectas",

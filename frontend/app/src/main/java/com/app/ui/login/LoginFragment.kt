@@ -39,7 +39,7 @@ class LoginFragment : Fragment() {
                 Snackbar.make(binding.root, "Login correcto", Snackbar.LENGTH_SHORT).show()
                 val user = authResponse.user
                 if (user != null) {
-                    SessionManager.login(user.id, user.username, user.email)
+                    SessionManager.login(user.id, user.username, user.email, user.profileImageUrl)
                 }
                 (requireActivity() as? MainActivity)?.refreshDrawerHeader()
                 findNavController().navigate(R.id.action_login_to_feed)
