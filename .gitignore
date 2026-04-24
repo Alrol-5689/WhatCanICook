@@ -26,3 +26,8 @@ frontend/.kotlin/
 frontend/local.properties
 frontend/build/
 backend/target/
+
+# User uploads (keep folder structure, ignore files)
+backend/uploads/**
+!backend/uploads/**/
+!backend/uploads/**/.gitkeep
