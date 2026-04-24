@@ -99,13 +99,13 @@ class ProfileFragment : Fragment() {
     private fun showPhotoPicker() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.cambiar_foto))
-            .setMessage(getString(R.string.seleccionar_origen_foto))
             .setItems(arrayOf(getString(R.string.galeria), getString(R.string.camara))) { _, which ->
                 when (which) {
                     0 -> pickImage.launch("image/*")
                     1 -> ensureCameraPermissionAndLaunch()
                 }
             }
+            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
