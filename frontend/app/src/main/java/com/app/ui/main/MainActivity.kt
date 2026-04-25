@@ -33,26 +33,25 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isAuthScreen =
-                destination.id == R.id.loginFragment || destination.id == R.id.registerFragment
+                destination.id == R.id.loginFragment ||
+                destination.id == R.id.registerFragment
 
             val isMainScreen =
                 destination.id == R.id.feedFragment ||
-                    destination.id == R.id.favoritesFragment ||
-                    destination.id == R.id.profileFragment ||
-                    destination.id == R.id.myRecipesFragment ||
-                    destination.id == R.id.friendsFragment ||
-                    destination.id == R.id.uploadRecipeFragment ||
-                    destination.id == R.id.recipeCreateFragment ||
-                    destination.id == R.id.userSearchFragment
+                destination.id == R.id.favoritesFragment ||
+                destination.id == R.id.profileFragment ||
+                destination.id == R.id.myRecipesFragment ||
+                destination.id == R.id.friendsFragment ||
+                destination.id == R.id.uploadRecipeFragment ||
+                destination.id == R.id.recipeCreateFragment ||
+                destination.id == R.id.userSearchFragment
 
             binding.bottomNav.visibility = if (isMainScreen) View.VISIBLE else View.GONE
             binding.drawerLayout.setDrawerLockMode(
                 if (isAuthScreen) DrawerLayout.LOCK_MODE_LOCKED_CLOSED else DrawerLayout.LOCK_MODE_UNLOCKED
             )
 
-            if (!isAuthScreen) {
-                refreshDrawerHeader()
-            }
+            if (!isAuthScreen) refreshDrawerHeader()
         }
 
         // --- Navegación del Drawer Menu ---
