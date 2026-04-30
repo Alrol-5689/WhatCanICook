@@ -24,4 +24,8 @@ public class RecipeSummaryDto {
     private String username;
 
     private LocalDateTime createdAt;
+
+    private Integer matchingIngredients;
+
+    private Integer totalIngredients;
 }

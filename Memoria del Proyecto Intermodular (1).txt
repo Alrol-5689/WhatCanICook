@@ -1,0 +1,72 @@
+https://github.com/Alrol-5689/WhatCanICook.git Memoria del Proyecto Intermodular: WhatCanICook
+
+1. RESUMEN / ABSTRACT
+Resumen: WhatCanICook nace como una solución técnica a la falta de
+inspiración culinaria en el hogar; el proyecto comprende una app multiplataforma integrada con bases de datos relacionales, donde los usuarios podrán compartir sus recetas e ingredientes disponibles con otros usuarios.
+Se ha puesto especial énfasis en la escalabilidad y en una arquitectura mantenible que permita el crecimiento de una comunidad de usuarios estable y modificable a largo plazo.
+
+
+2. JUSTIFICACIÓN
+La elección de este proyecto responde a una problemática real: la mala gestión de los ingredientes en el ámbito doméstico .
+A diferencia de otras plataformas , WhatCanICook se centra en la economía domestica, para reducir el desperdicio alimentario de una forma creativa.
+Esto no solo aporta valor práctico, sino que promueve un consumo responsable y acerca la cocina a los usuarios.
+
+
+3. OBJETIVOS
+* Objetivo General: Desarrollar una app multiplataforma para gestionar recetas e ingredientes de forma eficiente .
+* Objetivos Específicos:
+1. Crear una API que permita gestionar toda la lógica de la aplicación, incluyendo el manejo de usuarios, recetas y datos almacenados, de forma organizada y eficiente.
+2. Diseñar una base de datos en MySQL que permita almacenar correctamente la información de la aplicación, teniendo en cuenta relaciones como usuarios, recetas, ingredientes, favoritos y seguidores.
+3. Desarrollar una aplicación móvil en Android con Kotlin que sea fácil de usar, clara, accesible e intuitiva para cualquier tipo de usuario, dando importancia a la experiencia de uso.
+
+4. Añadir opciones para que los usuarios puedan interactuar entre ellos, como compartir recetas, guardar recetas en favoritos o seguir a otros usuarios.
+5. Asegurar que los datos de los usuarios estén protegidos, especialmente las contraseñas, aplicando técnicas como cifrado.
+6. Gestionar los flujos de trabajo utilizando GitHub trabajando con ramas y gestionando los cambios mediante buena comunicación de forma ordenada y eficiente.
+7. Desarrollo paralelo de una memoria de trabajo donde se explique todo el proceso seguido, desde la idea inicial hasta el resultado final.
+
+
+
+
+
+
+
+4. TECNOLOGÍAS EMPLEADAS
+Para el núcleo del sistema, se ha optado por Java 21 con Spring Boot como el motor que gestiona las peticiones y la seguridad.
+Las bases de datos se manejan en MySQL, que se despliega mediante Docker para facilitar la portabilidad del entorno de desarrollo.
+En la parte visual/UI, Kotlin es el lenguaje elegido para la App Android por su modernidad y accesibilidad.
+
+
+5. DESARROLLO Y METODOLOGÍA
+5.1. Metodología de trabajo
+Principalmente se trabaja mediante la gestión de ramas en GitHub , con un proyecto común y una rama personal para desarrollo.
+5.2. Diseño de la Base de Datos y Navegación
+El modelo de datos se ha estructurado para soportar relaciones complejas, como el sistema de seguidores y la asociación de ingredientes a recetas.
+Se han diseñado diagramas de flujo de navegación para procurar que el usuario llegue a cualquier funcionalidad de forma sencilla.
+
+6. PRESUPUESTO
+
+
+7. CONCLUSIONES Y MEJORAS
+7.1. Conclusiones
+El desarrollo del proyecto WhatCanICook ha sido una buena oportunidad para poner en práctica muchos de los conocimientos adquiridos durante el ciclo formativo, especialmente en áreas como el desarrollo backend, el diseño de bases de datos y la creación de aplicaciones móviles.
+Uno de los aspectos más importantes ha sido el trabajo en equipo y el uso de GitHub para gestionar el código. Trabajar con ramas, hacer merges y coordinar los cambios no ha sido fácil al principio, pero con el tiempo ha resultado muy útil para mantener el proyecto organizado y entender mejor cómo se trabaja en entornos reales.
+A nivel técnico, el uso de tecnologías como Spring Boot, Kotlin y Docker nos ha permitido construir una base bastante sólida sobre la que seguir trabajando. Eso sí, también ha supuesto un reto, sobre todo por la necesidad de aprender
+herramientas nuevas mientras desarrollábamos el proyecto.
+En cuanto a la parte funcional, la aplicación cumple con los objetivos principales que nos habíamos planteado, ofreciendo una solución útil para gestionar ingredientes y buscar recetas. Aun así, al tratarse de una primera versión o MVP, todavía quedan bastantes cosas por mejorar y ampliar en el futuro.
+7.2 Ampliaciones y mejoras futuras
+De cara al futuro, el proyecto presenta un gran potencial de crecimiento. Algunas de las mejoras que podrían implementarse son:
+* Sistema de recomendación avanzado, utilizando inteligencia artificial para sugerir recetas más personalizadas.
+* Lista de la compra automática, generada a partir de recetas seleccionadas por el usuario.
+* Sistema de valoraciones y comentarios, que permita a los usuarios interactuar y evaluar recetas.
+* Integración con APIs externas, como supermercados o servicios de entrega a domicilio.
+* Versión web de la aplicación, ampliando el acceso a más usuarios.
+
+* Notificaciones push, para informar sobre nuevas recetas o actividad de usuarios seguidos.
+* Mejora del diseño UI/UX, haciéndolo más atractivo y moderno.
+7.3 Reflexión final
+
+Como estudiantes, este proyecto ha supuesto un paso importante hacia el mundo profesional del desarrollo de aplicaciones móviles. No solo se han aplicado conocimientos técnicos, sino que también se han desarrollado habilidades como la resolución de problemas, la planificación y el trabajo en equipo.
+
+Además, WhatCanICook no es solo un proyecto académico, sino una idea con potencial real en el mercado, especialmente en un contexto donde la sostenibilidad y la optimización de recursos son cada vez más importantes.
+
+Con más tiempo y desarrollo, esta aplicación podría evolucionar hasta convertirse en una plataforma completa y competitiva dentro del sector de aplicaciones culinarias.

@@ -24,11 +24,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             WHERE r.publicRecipe = true
               AND i.id IN :ingredientIds
             GROUP BY r.id
-            HAVING COUNT(DISTINCT i.id) = :ingredientCount
             ORDER BY r.createdAt DESC
             """)
-    List<Recipe> findPublicRecipesContainingAllIngredients(
-            @Param("ingredientIds") List<Long> ingredientIds,
-            @Param("ingredientCount") long ingredientCount
+    List<Recipe> findPublicRecipesWithAnyIngredient(
+            @Param("ingredientIds") List<Long> ingredientIds
     );
 }

@@ -55,6 +55,20 @@ class RecipeAdapter(
             if (isFavorite) R.drawable.ic_star_filled else R.drawable.ic_star_outline
         )
 
+        if (recipe.matchingIngredients != null && recipe.totalIngredients != null) {
+            holder.textMatchStatus.visibility = View.VISIBLE
+            if (recipe.matchingIngredients == recipe.totalIngredients) {
+                holder.textMatchStatus.text = "¡Ideal!"
+                holder.textMatchStatus.setBackgroundResource(R.color.pumpkin_orange)
+            } else {
+                val missing = recipe.totalIngredients - recipe.matchingIngredients
+                holder.textMatchStatus.text = "Faltan $missing ingr."
+                holder.textMatchStatus.setBackgroundResource(android.R.color.darker_gray)
+            }
+        } else {
+            holder.textMatchStatus.visibility = View.GONE
+        }
+
         // Detectamos click en la fila
         holder.itemView.setOnClickListener {
             onRecipeClick(recipe.id)
@@ -77,5 +91,6 @@ class RecipeAdapter(
         val textDescription: TextView = itemView.findViewById(R.id.textDescription)
         val textUsername: TextView = itemView.findViewById(R.id.textUsername)
         val favoriteButton: ImageButton = itemView.findViewById(R.id.favoriteButton)
+        val textMatchStatus: TextView = itemView.findViewById(R.id.textMatchStatus)
     }
 }

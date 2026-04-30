@@ -50,6 +50,23 @@
             app:layout_constraintTop_toBottomOf="@id/textTitle" />
 
         <TextView
+            android:id="@+id/textMatchStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textTitle"
+            tools:text="¡Ideal!"
+            tools:visibility="visible"
+            tools:background="@color/pumpkin_orange" />
+
+        <TextView
             android:id="@+id/textDescription"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

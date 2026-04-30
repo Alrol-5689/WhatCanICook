@@ -16,13 +16,6 @@ android {
 
     compileSdk = 36
 
-    /* SISTEMA NUEVO EXPERIMENTAL
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }*/
-
     defaultConfig {
         applicationId = "com.app"
         minSdk = 24
@@ -51,9 +44,8 @@ android {
     }
 
     buildFeatures {
-        buildConfig = true // clase BuildConfig
-        viewBinding = true // clase ActivityLoginBinding...
-        //dataBinding // binding avanzado con XML
+        buildConfig = true
+        viewBinding = true
     }
 
 }
@@ -71,5 +63,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("io.coil-kt:coil:2.6.0")
 }

@@ -122,10 +122,9 @@ public class RecipeService {
             ingredientIds.add(ingredient.getId());
         }
 
-        return recipeRepository.findPublicRecipesContainingAllIngredients(ingredientIds, ingredientIds.size())
-                .stream()
-                .map(recipeMapper::toSummaryDto)
-                .toList();
+        List<Recipe> candidateRecipes = recipeRepository.findPublicRecipesWithAnyIngredient(ingredientIds);
+        
+        return processAndSortCandidateRecipes(candidateRecipes, ingredientIds);
     }
 
     public List<RecipeSummaryDto> findPublicRecipesByIngredientIds(RecipesByIngredientIdsRequest request) {
@@ -139,9 +138,35 @@ public class RecipeService {
             return List.of();
         }
 
-        return recipeRepository.findPublicRecipesContainingAllIngredients(normalized, normalized.size())
-                .stream()
-                .map(recipeMapper::toSummaryDto)
-                .toList();
+        List<Recipe> candidateRecipes = recipeRepository.findPublicRecipesWithAnyIngredient(normalized);
+        return processAndSortCandidateRecipes(candidateRecipes, normalized);
+    }
+
+    private List<RecipeSummaryDto> processAndSortCandidateRecipes(List<Recipe> recipes, List<Long> userIngredientIds) {
+        return recipes.stream().map(recipe -> {
+            RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
+            long matchCount = recipe.getIngredients().stream()
+                    .filter(i -> userIngredientIds.contains(i.getId()))
+                    .count();
+            dto.setMatchingIngredients((int) matchCount);
+            dto.setTotalIngredients(recipe.getIngredients().size());
+            return dto;
+        }).sorted((r1, r2) -> {
+            // Ordenar por:
+            // 1. Es IDEAL primero (matching == total) vs no ideal
+            boolean r1Ideal = r1.getMatchingIngredients().equals(r1.getTotalIngredients());
+            boolean r2Ideal = r2.getMatchingIngredients().equals(r2.getTotalIngredients());
+            if (r1Ideal && !r2Ideal) return -1;
+            if (!r1Ideal && r2Ideal) return 1;
+
+            // 2. Si ambos son igual, ordenar por porcentaje de match (descendente)
+            double r1Ratio = (double) r1.getMatchingIngredients() / r1.getTotalIngredients();
+            double r2Ratio = (double) r2.getMatchingIngredients() / r2.getTotalIngredients();
+            int ratioCompare = Double.compare(r2Ratio, r1Ratio);
+            if (ratioCompare != 0) return ratioCompare;
+
+            // 3. Ordenar por fecha desc
+            return r2.getCreatedAt().compareTo(r1.getCreatedAt());
+        }).toList();
     }
 }

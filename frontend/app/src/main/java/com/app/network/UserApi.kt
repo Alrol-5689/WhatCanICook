@@ -1,9 +1,11 @@
 package com.app.network
 
+import com.app.dto.model.IngredientDto
 import com.app.dto.model.UserDto
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.DELETE
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
@@ -24,4 +26,19 @@ interface UserApi {
         @Path("userId") userId: Long,
         @Part file: MultipartBody.Part
     ): Call<UserDto>
+
+    @GET("users/{userId}/pantry")
+    fun getPantry(@Path("userId") userId: Long): Call<List<IngredientDto>>
+
+    @POST("users/{userId}/pantry/{ingredientId}")
+    fun addToPantry(
+        @Path("userId") userId: Long,
+        @Path("ingredientId") ingredientId: Long
+    ): Call<List<IngredientDto>>
+
+    @DELETE("users/{userId}/pantry/{ingredientId}")
+    fun removeFromPantry(
+        @Path("userId") userId: Long,
+        @Path("ingredientId") ingredientId: Long
+    ): Call<List<IngredientDto>>
 }

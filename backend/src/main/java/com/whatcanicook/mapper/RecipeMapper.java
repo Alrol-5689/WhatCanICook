@@ -28,7 +28,9 @@ public class RecipeMapper {
                 recipe.isPublicRecipe(),
                 recipe.getUser().getId(),
                 recipe.getUser().getUsername(),
-                recipe.getCreatedAt()
+                recipe.getCreatedAt(),
+                null,
+                null
         );
     }
 

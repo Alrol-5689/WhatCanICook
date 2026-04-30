@@ -1,0 +1,71 @@
+https://github.com/Alrol-5689/WhatCanICook.git Memoria del Proyecto Intermodular: WhatCanICook
+
+1.	RESUMEN / ABSTRACT
+Resumen: WhatCanICook nace como una solución técnica a la falta de inspiración culinaria en el hogar; el proyecto comprende una app multiplataforma integrada con bases de datos relacionales, donde los usuarios podrán compartir sus recetas e ingredientes disponibles con otros usuarios.
+Se ha puesto especial énfasis en la escalabilidad y en una arquitectura mantenible que permita el crecimiento de una comunidad de usuarios estable y modificable a largo plazo.
+
+
+2.	JUSTIFICACIÓN
+La elección de este proyecto responde a una problemática real: la mala gestión de los ingredientes en el ámbito doméstico.
+A diferencia de otras plataformas, WhatCanICook se centra en la economía domestica, para reducir el desperdicio alimentario de una forma creativa.
+Esto no solo aporta valor práctico, sino que promueve un consumo responsable y acerca la cocina a los usuarios.
+
+
+3.	OBJETIVOS
+•	Objetivo General: Desarrollar una app multiplataforma para gestionar recetas e ingredientes de forma eficiente.
+•	Objetivos Específicos:
+1.	Crear una API que permita gestionar toda la lógica de la aplicación, incluyendo el manejo de usuarios, recetas y datos almacenados, de forma organizada y eficiente.
+2.	Diseñar una base de datos en MySQL que permita almacenar correctamente la información de la aplicación, teniendo en cuenta relaciones como usuarios, recetas, ingredientes, favoritos y seguidores.
+3.	Desarrollar una aplicación móvil en Android con Kotlin que sea fácil de usar, clara, accesible e intuitiva para cualquier tipo de usuario, dando importancia a la experiencia de uso.
+4.	Añadir opciones para que los usuarios puedan interactuar entre ellos, como compartir recetas, guardar recetas en favoritos o seguir a otros usuarios.
+5.	Asegurar que los datos de los usuarios estén protegidos, especialmente las contraseñas, aplicando técnicas como cifrado.
+6.	Gestionar los flujos de trabajo utilizando GitHub trabajando con ramas y gestionando los cambios mediante buena comunicación de forma ordenada y eficiente.
+7.	Desarrollo paralelo de una memoria de trabajo donde se explique todo el proceso seguido, desde la idea inicial hasta el resultado final.
+
+
+4.	TECNOLOGÍAS EMPLEADAS
+Para el núcleo del sistema, se ha optado por Java 21 con Spring Boot como el motor que gestiona las peticiones y la seguridad.
+Las bases de datos se manejan en MySQL, que se despliega mediante Docker para facilitar la portabilidad del entorno de desarrollo.
+En la parte visual/UI, Kotlin es el lenguaje elegido para la App Android por su modernidad y accesibilidad. Se utiliza Retrofit para la comunicación con el Backend y ViewBinding para la gestión eficiente de los layouts.
+
+
+5.	DESARROLLO Y METODOLOGÍA
+5.1.	Metodología de trabajo
+Principalmente se trabaja mediante la gestión de ramas en GitHub, con un proyecto común y una rama personal para desarrollo. Se ha implementado un flujo de trabajo basado en Pull Requests para asegurar la calidad del código antes del merge a la rama principal (main).
+
+5.2.	Diseño de la Base de Datos y Navegación
+El modelo de datos se ha estructurado para soportar relaciones complejas, como el sistema de seguidores y la asociación de ingredientes a recetas. Se han diseñado diagramas de flujo de navegación para procurar que el usuario llegue a cualquier funcionalidad de forma sencilla.
+
+5.3.	Evolución del Diseño Visual (UI/UX)
+Se ha superado la fase inicial de diseño estándar, implementando una identidad visual propia basada en el estilo "Neo-brutalista".
+- Paleta de Colores: Uso del Naranja Calabaza (#FF7518) como color primario de marca, combinado con Negro para bordes de alto contraste y Blanco/Gris claro para fondos.
+- Componentes personalizados: Definición de un estilo global para botones y campos de texto con bordes marcados de 2dp, mejorando la jerarquía visual.
+- Layouts actualizados: Rediseño integral de las pantallas de Login, Registro, Feed de Recetas y Detalles, priorizando la legibilidad y la experiencia del usuario.
+
+5.4.	Implementación del Módulo de Despensa (Pantry)
+Se ha desarrollado desde cero el sistema de gestión de ingredientes personales.
+- Arquitectura: Uso de MVVM con un ViewModel dedicado (PantryViewModel) que gestiona el estado de la despensa de forma independiente.
+- Funcionalidad: El usuario puede añadir, eliminar y listar ingredientes disponibles en su hogar. El sistema normaliza las entradas para evitar duplicados y errores de búsqueda.
+
+
+6.	PRESUPUESTO
+
+
+7.	CONCLUSIONES Y MEJORAS
+7.1.	Conclusiones
+El desarrollo del proyecto WhatCanICook ha sido una buena oportunidad para poner en práctica muchos de los conocimientos adquiridos durante el ciclo formativo. La integración de un diseño visual potente con una infraestructura backend robusta ha permitido pasar de un prototipo básico (MVP) a una aplicación con identidad propia.
+El trabajo en equipo ha sido fundamental para resolver los retos técnicos surgidos durante la migración de datos ficticios (mocks) a la base de datos real en MySQL.
+
+7.2	Ampliaciones y mejoras futuras
+Actualmente, el proyecto ha cumplido los siguientes hitos:
+•	Migración completa de mocks a DB real mediante Retrofit.
+•	Sistema de favoritos y búsqueda de usuarios funcional.
+•	Diseño visual unificado en toda la aplicación.
+
+Mejoras planificadas para las próximas fases:
+•	Finalización del algoritmo de búsqueda de recetas por ingredientes desde la nueva Despensa.
+•	Conexión de los módulos de perfil y gestión de amigos con la nueva interfaz.
+•	Sistema de recomendación avanzado utilizando la lógica de ingredientes disponibles.
+
+7.3	Reflexión final
+Como estudiantes, este proyecto ha supuesto un paso importante hacia el mundo profesional del desarrollo de aplicaciones móviles. WhatCanICook no es solo un proyecto académico, sino una solución real orientada a la sostenibilidad y la optimización de recursos domésticos.

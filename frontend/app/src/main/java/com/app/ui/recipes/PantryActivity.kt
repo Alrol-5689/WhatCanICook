@@ -14,6 +14,11 @@ import com.app.databinding.ActivityPantryBinding
 import com.app.databinding.ItemPantryIngredientBinding
 import com.app.dto.model.IngredientDto
 import com.app.ui.recipes.adapter.IngredientSearchAdapter
+import com.google.android.material.chip.Chip
+import android.widget.EditText
+import android.view.inputmethod.EditorInfo
+import android.view.KeyEvent
+import androidx.appcompat.app.AlertDialog
 
 class PantryActivity : AppCompatActivity() {
 
@@ -21,8 +26,6 @@ class PantryActivity : AppCompatActivity() {
     private val viewModel: PantryViewModel by viewModels()
     private lateinit var selectedAdapter: SelectedIngredientAdapter
     private lateinit var ingredientSearchAdapter: IngredientSearchAdapter
-
-    private var availableIngredients: List<IngredientDto> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +36,6 @@ class PantryActivity : AppCompatActivity() {
         setupRecyclerView()
         setupInputs()
         observarViewModel()
-
-        viewModel.fetchIngredients()
     }
 
     private fun setupToolbar() {
@@ -60,37 +61,79 @@ class PantryActivity : AppCompatActivity() {
     private fun setupInputs() {
         binding.editSearchIngredient.doAfterTextChanged { editable ->
             val query = editable?.toString()?.trim()?.lowercase().orEmpty()
-            if (query.isEmpty()) {
-                binding.rvIngredientSearch.visibility = View.GONE
-                return@doAfterTextChanged
-            }
+            // Ahora la búsqueda es en tiempo real consultando a la base de datos
+            viewModel.searchIngredients(query)
+        }
 
-            val selectedIds = (viewModel.selectedIngredients.value ?: emptyList()).map { it.id }.toSet()
-            val filtered = availableIngredients
-                .asSequence()
-                .filter { it.id !in selectedIds }
-                .filter {
-                    (it.castellano?.lowercase()?.contains(query) == true) ||
-                        it.name.lowercase().contains(query)
+        binding.editSearchIngredient.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || 
+                (event != null && event.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                
+                val name = v.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    val available = viewModel.availableIngredients.value ?: emptyList()
+                    val existing = available.find { 
+                        it.name.equals(name, ignoreCase = true) || 
+                        it.castellano.equals(name, ignoreCase = true) 
+                    }
+                    
+                    if (existing != null) {
+                        viewModel.addIngredient(existing)
+                    } else {
+                        viewModel.createNewIngredient(name)
+                    }
+                    
+                    binding.editSearchIngredient.text?.clear()
+                    binding.rvIngredientSearch.visibility = View.GONE
                 }
-                .take(25)
-                .toList()
-
-            ingredientSearchAdapter.setIngredients(filtered)
-            binding.rvIngredientSearch.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
+                true
+            } else {
+                false
+            }
         }
 
         binding.findRecipesButton.setOnClickListener {
             val ingredientIds = viewModel.getSelectedIngredientIds()
+            if (ingredientIds.isEmpty()) return@setOnClickListener
+            
             val intent = Intent(this, PantryResultsActivity::class.java)
             intent.putExtra(PantryResultsActivity.EXTRA_INGREDIENT_IDS, ingredientIds.toLongArray())
             startActivity(intent)
         }
+
+        binding.btnCreateIngredient.setOnClickListener {
+            mostrarDialogoCrearIngrediente()
+        }
+    }
+
+    private fun mostrarDialogoCrearIngrediente() {
+        val editText = EditText(this).apply {
+            hint = "Nombre del ingrediente"
+            setPadding(50, 50, 50, 50)
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Crear Ingrediente")
+            .setMessage("Añade un nuevo ingrediente a la base de datos global.")
+            .setView(editText)
+            .setPositiveButton("Crear") { _, _ ->
+                val name = editText.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    viewModel.createNewIngredient(name)
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun observarViewModel() {
-        viewModel.availableIngredients.observe(this) { list ->
-            availableIngredients = list ?: emptyList()
+        // Observamos los resultados de la búsqueda que vienen de la API
+        viewModel.searchResults.observe(this) { list ->
+            val selectedIds = (viewModel.selectedIngredients.value ?: emptyList()).map { it.id }.toSet()
+            // Filtramos los que ya están seleccionados
+            val filtered = (list ?: emptyList()).filter { it.id !in selectedIds }
+            
+            ingredientSearchAdapter.setIngredients(filtered)
+            binding.rvIngredientSearch.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
         }
 
         viewModel.selectedIngredients.observe(this) { list ->
@@ -98,7 +141,33 @@ class PantryActivity : AppCompatActivity() {
         }
 
         viewModel.error.observe(this) { _ ->
-            // Silencioso: si falla, simplemente no habrá sugerencias.
+            binding.rvIngredientSearch.visibility = View.GONE
+        }
+
+        viewModel.availableIngredients.observe(this) { list ->
+            actualizarChipsDisponibles(list ?: emptyList())
+        }
+    }
+
+    private fun actualizarChipsDisponibles(disponibles: List<IngredientDto>) {
+        binding.chipGroupAvailable.removeAllViews()
+        val selectedIds = viewModel.getSelectedIngredientIds()
+
+        disponibles.forEach { ingredient ->
+            val chip = Chip(this).apply {
+                val spanish = ingredient.castellano?.takeIf { it.isNotBlank() }
+                text = spanish ?: ingredient.name
+                isCheckable = true
+                isChecked = selectedIds.contains(ingredient.id)
+                setOnClickListener {
+                    if (isChecked) {
+                        viewModel.addIngredient(ingredient)
+                    } else {
+                        viewModel.removeIngredient(ingredient.id)
+                    }
+                }
+            }
+            binding.chipGroupAvailable.addView(chip)
         }
     }
 

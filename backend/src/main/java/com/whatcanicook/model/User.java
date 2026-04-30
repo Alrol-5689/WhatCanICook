@@ -58,6 +58,18 @@ public class User {
                     foreignKey = @ForeignKey(name = "fk_favorite_recipes_recipe")))
     private List<Recipe> favoriteRecipes = new ArrayList<>();
 
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "pantry_ingredients",
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    foreignKey = @ForeignKey(name = "fk_pantry_ingredients_user")),
+            inverseJoinColumns = @JoinColumn(
+                    name = "ingredient_id",
+                    foreignKey = @ForeignKey(name = "fk_pantry_ingredients_ingredient")))
+    private List<Ingredient> pantryIngredients = new ArrayList<>();
+
 //    User  ←→  Recipe
 //
 //    User 1 ─── N favorite_recipes N ─── 1 Recipe

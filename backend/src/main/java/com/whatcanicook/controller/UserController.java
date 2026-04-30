@@ -1,5 +1,6 @@
 package com.whatcanicook.controller;
 
+import com.whatcanicook.dto.model.IngredientDto;
 import com.whatcanicook.dto.model.UserDto;
 import com.whatcanicook.service.UploadService;
 import com.whatcanicook.service.UserService;
@@ -9,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,5 +44,24 @@ public class UserController {
     ) {
         String url = uploadService.storeImage(file, "profiles");
         return ResponseEntity.ok(userService.updateProfileImageUrl(userId, url));
+    }
+
+    @GetMapping("/{userId}/pantry")
+    public ResponseEntity<List<IngredientDto>> getPantry(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getPantry(userId));
+    }
+
+    @PostMapping("/{userId}/pantry/{ingredientId}")
+    public ResponseEntity<List<IngredientDto>> addToPantry(
+            @PathVariable Long userId,
+            @PathVariable Long ingredientId) {
+        return ResponseEntity.ok(userService.addToPantry(userId, ingredientId));
+    }
+
+    @DeleteMapping("/{userId}/pantry/{ingredientId}")
+    public ResponseEntity<List<IngredientDto>> removeFromPantry(
+            @PathVariable Long userId,
+            @PathVariable Long ingredientId) {
+        return ResponseEntity.ok(userService.removeFromPantry(userId, ingredientId));
     }
 }
