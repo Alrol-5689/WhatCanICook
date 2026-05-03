@@ -11,7 +11,7 @@ import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import com.app.R
 import com.app.databinding.ActivityMainBinding
-import com.app.ui.recipes.PantryActivity
+
 import com.app.utils.SessionManager
 
 class MainActivity : AppCompatActivity() {
@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
                 destination.id == R.id.profileFragment ||
                 destination.id == R.id.myRecipesFragment ||
                 destination.id == R.id.friendsFragment ||
-                destination.id == R.id.uploadRecipeFragment ||
                 destination.id == R.id.recipeCreateFragment ||
                 destination.id == R.id.userSearchFragment
 
@@ -58,8 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.searchRecipesButton.setOnClickListener {
             binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
-            val intent = Intent(this, PantryActivity::class.java)
-            startActivity(intent)
+            navController.navigate(R.id.pantryFragment)
         }
 
         binding.myRecipesButton.setOnClickListener {
@@ -82,10 +80,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigate(R.id.userSearchFragment)
         }
 
-        binding.uploadRecipeButton.setOnClickListener {
-            binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)
-            navController.navigate(R.id.recipeCreateFragment)
-        }
+
 
         binding.profileImage.setOnClickListener {
             binding.drawerLayout.closeDrawer(androidx.core.view.GravityCompat.START)

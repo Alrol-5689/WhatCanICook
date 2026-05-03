@@ -1,36 +1,44 @@
 package com.app.ui.recipes
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doAfterTextChanged
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.app.databinding.ActivityPantryBinding
-import com.app.databinding.ItemPantryIngredientBinding
-import com.app.dto.model.IngredientDto
-import com.app.ui.recipes.adapter.IngredientSearchAdapter
-import com.google.android.material.chip.Chip
 import android.widget.EditText
 import android.view.inputmethod.EditorInfo
 import android.view.KeyEvent
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.app.R
+import com.app.databinding.FragmentPantryBinding
+import com.app.databinding.ItemPantryIngredientBinding
+import com.app.dto.model.IngredientDto
+import com.app.ui.recipes.adapter.IngredientSearchAdapter
+import com.google.android.material.chip.Chip
 
-class PantryActivity : AppCompatActivity() {
+class PantryFragment : Fragment() {
 
-    private lateinit var binding: ActivityPantryBinding
+    private var _binding: FragmentPantryBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: PantryViewModel by viewModels()
     private lateinit var selectedAdapter: SelectedIngredientAdapter
     private lateinit var ingredientSearchAdapter: IngredientSearchAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPantryBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPantryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
         setupRecyclerView()
@@ -39,14 +47,16 @@ class PantryActivity : AppCompatActivity() {
     }
 
     private fun setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener { finish() }
+        binding.toolbar.setNavigationOnClickListener { 
+            findNavController().navigateUp()
+        }
     }
 
     private fun setupRecyclerView() {
         selectedAdapter = SelectedIngredientAdapter { ingredientId ->
             viewModel.removeIngredient(ingredientId)
         }
-        binding.pantryRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.pantryRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.pantryRecyclerView.adapter = selectedAdapter
 
         ingredientSearchAdapter = IngredientSearchAdapter { ingredient ->
@@ -54,14 +64,13 @@ class PantryActivity : AppCompatActivity() {
             binding.editSearchIngredient.text?.clear()
             binding.rvIngredientSearch.visibility = View.GONE
         }
-        binding.rvIngredientSearch.layoutManager = LinearLayoutManager(this)
+        binding.rvIngredientSearch.layoutManager = LinearLayoutManager(requireContext())
         binding.rvIngredientSearch.adapter = ingredientSearchAdapter
     }
 
     private fun setupInputs() {
         binding.editSearchIngredient.doAfterTextChanged { editable ->
             val query = editable?.toString()?.trim()?.lowercase().orEmpty()
-            // Ahora la búsqueda es en tiempo real consultando a la base de datos
             viewModel.searchIngredients(query)
         }
 
@@ -96,9 +105,10 @@ class PantryActivity : AppCompatActivity() {
             val ingredientIds = viewModel.getSelectedIngredientIds()
             if (ingredientIds.isEmpty()) return@setOnClickListener
             
-            val intent = Intent(this, PantryResultsActivity::class.java)
-            intent.putExtra(PantryResultsActivity.EXTRA_INGREDIENT_IDS, ingredientIds.toLongArray())
-            startActivity(intent)
+            val bundle = Bundle().apply {
+                putLongArray("ingredientIds", ingredientIds.toLongArray())
+            }
+            findNavController().navigate(R.id.action_pantry_to_results, bundle)
         }
 
         binding.btnCreateIngredient.setOnClickListener {
@@ -107,11 +117,11 @@ class PantryActivity : AppCompatActivity() {
     }
 
     private fun mostrarDialogoCrearIngrediente() {
-        val editText = EditText(this).apply {
+        val editText = EditText(requireContext()).apply {
             hint = "Nombre del ingrediente"
             setPadding(50, 50, 50, 50)
         }
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Crear Ingrediente")
             .setMessage("Añade un nuevo ingrediente a la base de datos global.")
             .setView(editText)
@@ -126,25 +136,24 @@ class PantryActivity : AppCompatActivity() {
     }
 
     private fun observarViewModel() {
-        // Observamos los resultados de la búsqueda que vienen de la API
-        viewModel.searchResults.observe(this) { list ->
+        viewModel.searchResults.observe(viewLifecycleOwner) { list ->
             val selectedIds = (viewModel.selectedIngredients.value ?: emptyList()).map { it.id }.toSet()
-            // Filtramos los que ya están seleccionados
             val filtered = (list ?: emptyList()).filter { it.id !in selectedIds }
             
             ingredientSearchAdapter.setIngredients(filtered)
             binding.rvIngredientSearch.visibility = if (filtered.isEmpty()) View.GONE else View.VISIBLE
         }
 
-        viewModel.selectedIngredients.observe(this) { list ->
+        viewModel.selectedIngredients.observe(viewLifecycleOwner) { list ->
             selectedAdapter.updateList(list ?: emptyList())
+            syncChipsSelection()
         }
 
-        viewModel.error.observe(this) { _ ->
+        viewModel.error.observe(viewLifecycleOwner) { _ ->
             binding.rvIngredientSearch.visibility = View.GONE
         }
 
-        viewModel.availableIngredients.observe(this) { list ->
+        viewModel.availableIngredients.observe(viewLifecycleOwner) { list ->
             actualizarChipsDisponibles(list ?: emptyList())
         }
     }
@@ -154,7 +163,8 @@ class PantryActivity : AppCompatActivity() {
         val selectedIds = viewModel.getSelectedIngredientIds()
 
         disponibles.forEach { ingredient ->
-            val chip = Chip(this).apply {
+            val chip = Chip(requireContext()).apply {
+                tag = ingredient.id
                 val spanish = ingredient.castellano?.takeIf { it.isNotBlank() }
                 text = spanish ?: ingredient.name
                 isCheckable = true
@@ -169,6 +179,22 @@ class PantryActivity : AppCompatActivity() {
             }
             binding.chipGroupAvailable.addView(chip)
         }
+    }
+
+    private fun syncChipsSelection() {
+        val selectedIds = viewModel.getSelectedIngredientIds()
+        for (i in 0 until binding.chipGroupAvailable.childCount) {
+            val chip = binding.chipGroupAvailable.getChildAt(i) as? Chip
+            val tagId = chip?.tag as? Long
+            if (chip != null && tagId != null) {
+                chip.isChecked = selectedIds.contains(tagId)
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     inner class SelectedIngredientAdapter(private val onRemove: (Long) -> Unit) :

@@ -153,15 +153,6 @@
                 app:icon="@android:drawable/ic_menu_search"
                 app:iconTint="@color/black" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/uploadRecipeButton"
-                style="@style/Widget.App.Button.White"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:text="@string/subir_receta"
-                app:icon="@android:drawable/ic_menu_upload"
-                app:iconTint="@color/black" />
 
             <!-- Botón Cerrar Sesión con énfasis Naranja -->
             <com.google.android.material.button.MaterialButton

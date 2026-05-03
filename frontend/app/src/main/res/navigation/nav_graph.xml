@@ -57,12 +57,6 @@
         tools:layout="@layout/fragment_friends" />
 
     <fragment
-        android:id="@+id/uploadRecipeFragment"
-        android:name="com.app.ui.upload.UploadRecipeFragment"
-        android:label="Subir receta"
-        tools:layout="@layout/fragment_placeholder" />
-
-    <fragment
         android:id="@+id/recipeCreateFragment"
         android:name="com.app.ui.recipes.create.RecipeCreateFragment"
         android:label="Crear receta"
@@ -73,5 +67,31 @@
         android:name="com.app.ui.users.search.UserSearchFragment"
         android:label="Buscar usuarios"
         tools:layout="@layout/fragment_user_search" />
+
+    <fragment
+        android:id="@+id/pantryFragment"
+        android:name="com.app.ui.recipes.PantryFragment"
+        android:label="Mi Despensa"
+        tools:layout="@layout/fragment_pantry">
+        <action
+            android:id="@+id/action_pantry_to_results"
+            app:destination="@id/pantryResultsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/pantryResultsFragment"
+        android:name="com.app.ui.recipes.PantryResultsFragment"
+        android:label="Resultados"
+        tools:layout="@layout/fragment_pantry_results">
+        <action
+            android:id="@+id/action_pantry_results_to_detail"
+            app:destination="@id/recipeDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/recipeDetailFragment"
+        android:name="com.app.ui.recipes.RecipeDetailFragment"
+        android:label="Detalle"
+        tools:layout="@layout/fragment_recipe_detail" />
 
 </navigation>

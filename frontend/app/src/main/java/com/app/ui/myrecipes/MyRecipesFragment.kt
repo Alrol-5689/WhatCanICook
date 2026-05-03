@@ -14,7 +14,8 @@ import com.app.dto.request.FavoriteRecipeRequest
 import com.app.network.RetrofitClient
 import com.app.ui.main.MainActivity
 import com.app.ui.recipes.adapter.RecipeAdapter
-import com.app.ui.recipes.RecipeDetailActivity
+import com.app.R
+import androidx.navigation.fragment.findNavController
 import com.app.utils.SessionManager
 import retrofit2.Call
 import retrofit2.Callback
@@ -60,9 +61,10 @@ class MyRecipesFragment : Fragment() {
     private fun setupRecyclerView() {
         recipeAdapter = RecipeAdapter(
             onRecipeClick = { recipeId ->
-                val intent = Intent(requireContext(), RecipeDetailActivity::class.java)
-                intent.putExtra("recipeId", recipeId)
-                startActivity(intent)
+                val bundle = Bundle().apply {
+                    putLong("recipeId", recipeId)
+                }
+                findNavController().navigate(R.id.recipeDetailFragment, bundle)
             },
             onFavoriteToggle = { recipeId, nowFavorite ->
                 toggleFavorite(recipeId, nowFavorite)

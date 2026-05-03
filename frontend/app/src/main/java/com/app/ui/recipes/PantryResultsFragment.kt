@@ -1,12 +1,16 @@
 package com.app.ui.recipes
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.app.databinding.ActivityPantryResultsBinding
+import com.app.R
+import com.app.databinding.FragmentPantryResultsBinding
 import com.app.dto.request.FavoriteRecipeRequest
 import com.app.network.RetrofitClient
 import com.app.ui.recipes.adapter.RecipeAdapter
@@ -15,29 +19,30 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PantryResultsActivity : AppCompatActivity() {
+class PantryResultsFragment : Fragment() {
 
-    companion object {
-        const val EXTRA_INGREDIENT_IDS = "ingredient_ids"
-        const val EXTRA_INGREDIENTS = "ingredients"
-    }
-
-    private lateinit var binding: ActivityPantryResultsBinding
+    private var _binding: FragmentPantryResultsBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: PantryResultsViewModel by viewModels()
     private lateinit var recipeAdapter: RecipeAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPantryResultsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPantryResultsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding.toolbar.setNavigationOnClickListener { finish() }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
 
         setupRecyclerView()
         observeViewModel()
 
-        val ingredientIds = intent.getLongArrayExtra(EXTRA_INGREDIENT_IDS)?.toList()
-            ?: emptyList()
+        val ingredientIds = arguments?.getLongArray("ingredientIds")?.toList() ?: emptyList()
         viewModel.loadRecipes(ingredientIds)
         refreshFavorites()
     }
@@ -45,25 +50,33 @@ class PantryResultsActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         recipeAdapter = RecipeAdapter(
             onRecipeClick = { recipeId ->
-                val intent = Intent(this, RecipeDetailActivity::class.java)
-                intent.putExtra("recipeId", recipeId)
-                startActivity(intent)
+                val bundle = Bundle().apply {
+                    putLong("recipeId", recipeId)
+                }
+                findNavController().navigate(R.id.action_pantry_results_to_detail, bundle)
             },
             onFavoriteToggle = { recipeId, nowFavorite ->
                 toggleFavorite(recipeId, nowFavorite)
             }
         )
-        binding.recipesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recipesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recipesRecyclerView.adapter = recipeAdapter
     }
 
     private fun observeViewModel() {
-        viewModel.recipes.observe(this) { recipes ->
-            recipeAdapter.setRecipes(recipes ?: emptyList())
+        viewModel.recipes.observe(viewLifecycleOwner) { recipes ->
+            // Sort recipes: IDEAL first, then SUGGESTED.
+            // Ideal if matchingIngredients >= totalIngredients
+            val sorted = (recipes ?: emptyList()).sortedByDescending { recipe ->
+                val match = recipe.matchingIngredients ?: 0
+                val total = recipe.totalIngredients ?: 1 // avoid div by zero, though unlikely
+                if (match >= total) 1 else 0 // 1 for Ideal, 0 for Suggested
+            }
+            recipeAdapter.setRecipes(sorted)
         }
 
-        viewModel.error.observe(this) { errorMsg ->
-            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
+        viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
+            Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -91,7 +104,7 @@ class PantryResultsActivity : AppCompatActivity() {
 
     private fun toggleFavorite(recipeId: Long, nowFavorite: Boolean) {
         if (!SessionManager.isLoggedIn()) {
-            Toast.makeText(this, "Haz login para usar favoritos", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Haz login para usar favoritos", Toast.LENGTH_SHORT).show()
             refreshFavorites()
             return
         }
@@ -107,15 +120,20 @@ class PantryResultsActivity : AppCompatActivity() {
         (call as Call<Any>).enqueue(object : Callback<Any> {
             override fun onResponse(call: Call<Any>, response: Response<Any>) {
                 if (!response.isSuccessful) {
-                    Toast.makeText(this@PantryResultsActivity, "Error al actualizar favoritas", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Error al actualizar favoritas", Toast.LENGTH_SHORT).show()
                     refreshFavorites()
                 }
             }
 
             override fun onFailure(call: Call<Any>, t: Throwable) {
-                Toast.makeText(this@PantryResultsActivity, t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
                 refreshFavorites()
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
