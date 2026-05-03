@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.text.Normalizer
 import com.app.R
 import com.app.databinding.FragmentPantryBinding
 import com.app.databinding.ItemPantryIngredientBinding
@@ -81,9 +82,10 @@ class PantryFragment : Fragment() {
                 val name = v.text.toString().trim()
                 if (name.isNotEmpty()) {
                     val available = viewModel.availableIngredients.value ?: emptyList()
+                    val normalizedName = name.removeAccents().lowercase()
                     val existing = available.find { 
-                        it.name.equals(name, ignoreCase = true) || 
-                        it.castellano.equals(name, ignoreCase = true) 
+                        it.name.removeAccents().lowercase() == normalizedName || 
+                        it.castellano?.removeAccents()?.lowercase() == normalizedName 
                     }
                     
                     if (existing != null) {
@@ -162,7 +164,8 @@ class PantryFragment : Fragment() {
         binding.chipGroupAvailable.removeAllViews()
         val selectedIds = viewModel.getSelectedIngredientIds()
 
-        disponibles.forEach { ingredient ->
+        // LIMITAMOS a 30 para no saturar el rendimiento de la UI (ChipGroup es lento)
+        disponibles.take(30).forEach { ingredient ->
             val chip = Chip(requireContext()).apply {
                 tag = ingredient.id
                 val spanish = ingredient.castellano?.takeIf { it.isNotBlank() }
@@ -230,5 +233,10 @@ class PantryFragment : Fragment() {
 
         inner class ViewHolder(val binding: ItemPantryIngredientBinding) : 
             RecyclerView.ViewHolder(binding.root)
+    }
+
+    private fun String.removeAccents(): String {
+        val normalized = Normalizer.normalize(this, Normalizer.Form.NFD)
+        return "\\p{InCombiningDiacriticalMarks}+".toRegex().replace(normalized, "")
     }
 }
