@@ -31,6 +31,16 @@ class StepAdapter : RecyclerView.Adapter<StepAdapter.StepViewHolder>() {
         notifyItemInserted(steps.size - 1)
     }
 
+    fun setSteps(newSteps: List<String>) {
+        steps.clear()
+        if (newSteps.isEmpty()) {
+            steps.add("")
+        } else {
+            steps.addAll(newSteps)
+        }
+        notifyDataSetChanged()
+    }
+
     inner class StepViewHolder(private val binding: ItemStepBinding) :
         RecyclerView.ViewHolder(binding.root) {
 

@@ -9,6 +9,8 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.DELETE
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -28,6 +30,12 @@ interface RecipeApi {
 
     @POST("recipes")
     fun createRecipe(@Body request: CreateRecipeRequest): Call<RecipeDetailDto>
+
+    @PUT("recipes/{id}")
+    fun updateRecipe(@Path("id") id: Long, @Body request: CreateRecipeRequest): Call<RecipeDetailDto>
+
+    @DELETE("recipes/{id}")
+    fun deleteRecipe(@Path("id") id: Long, @Query("userId") userId: Long): Call<Void>
 
     @POST("recipes/by-ingredients")
     fun getPublicRecipesByIngredients(@Body request: RecipesByIngredientsRequest): Call<List<RecipeSummaryDto>>

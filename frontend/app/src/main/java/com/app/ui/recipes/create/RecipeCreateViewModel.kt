@@ -25,6 +25,9 @@ class RecipeCreateViewModel : ViewModel() {
     private val _ingredients = MutableLiveData<List<IngredientDto>>()
     val ingredients: LiveData<List<IngredientDto>> = _ingredients
 
+    private val _recipeToEdit = MutableLiveData<RecipeDetailDto>()
+    val recipeToEdit: LiveData<RecipeDetailDto> = _recipeToEdit
+
     fun fetchIngredients() {
         RetrofitClient.ingredientApi.getAllIngredients().enqueue(object : Callback<List<IngredientDto>> {
             override fun onResponse(call: Call<List<IngredientDto>>, response: Response<List<IngredientDto>>) {
@@ -37,6 +40,22 @@ class RecipeCreateViewModel : ViewModel() {
 
             override fun onFailure(call: Call<List<IngredientDto>>, t: Throwable) {
                 _error.value = "Error conectando para ingredientes"
+            }
+        })
+    }
+
+    fun loadRecipeForEdit(recipeId: Long) {
+        recipeRepository.getRecipeById(recipeId).enqueue(object : Callback<RecipeDetailDto> {
+            override fun onResponse(call: Call<RecipeDetailDto>, response: Response<RecipeDetailDto>) {
+                if (response.isSuccessful && response.body() != null) {
+                    _recipeToEdit.value = response.body()
+                } else {
+                    _error.value = "Error al cargar receta para editar"
+                }
+            }
+
+            override fun onFailure(call: Call<RecipeDetailDto>, t: Throwable) {
+                _error.value = "Error conectando para cargar receta"
             }
         })
     }
@@ -78,6 +97,48 @@ class RecipeCreateViewModel : ViewModel() {
                     _createdRecipe.value = response.body()
                 } else {
                     _error.value = "Error al crear la receta"
+                }
+            }
+
+            override fun onFailure(call: Call<RecipeDetailDto>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión"
+            }
+        })
+    }
+
+    fun updateRecipe(
+        recipeId: Long,
+        title: String,
+        description: String,
+        publicRecipe: Boolean,
+        userId: Long,
+        ingredientIds: List<Long>,
+        steps: List<String>
+    ) {
+        if (title.isBlank()) {
+            _error.value = "El título es obligatorio"
+            return
+        }
+
+        val cleanSteps = steps
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+
+        val request = CreateRecipeRequest(
+            title = title.trim(),
+            description = description.trim(),
+            publicRecipe = publicRecipe,
+            userId = userId,
+            ingredientIds = ingredientIds,
+            steps = cleanSteps
+        )
+
+        recipeRepository.updateRecipe(recipeId, request).enqueue(object : Callback<RecipeDetailDto> {
+            override fun onResponse(call: Call<RecipeDetailDto>, response: Response<RecipeDetailDto>) {
+                if (response.isSuccessful && response.body() != null) {
+                    _createdRecipe.value = response.body() // Reusamos _createdRecipe para cerrar el fragmento
+                } else {
+                    _error.value = "Error al actualizar la receta"
                 }
             }
 

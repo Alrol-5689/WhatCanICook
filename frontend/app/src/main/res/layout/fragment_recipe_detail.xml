@@ -144,6 +144,35 @@
                 android:lineSpacingExtra="4dp"
                 tools:text="1. Cortar el pollo en dados.\n2. Calentar la sartén con aceite.\n3. Añadir el vino y dejar reducir." />
 
+            <LinearLayout
+                android:id="@+id/layoutActionButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonEditRecipe"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Editar"
+                    app:backgroundTint="@color/pumpkin_orange" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonDeleteRecipe"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Eliminar"
+                    app:backgroundTint="@android:color/holo_red_dark" />
+
+            </LinearLayout>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

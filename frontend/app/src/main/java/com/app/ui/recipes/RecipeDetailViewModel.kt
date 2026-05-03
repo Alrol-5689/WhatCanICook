@@ -14,6 +14,9 @@ class RecipeDetailViewModel : ViewModel() {
 
     private val repository = RecipeRepository(RetrofitClient.recipeApi)
 
+    private val _deleteSuccess = MutableLiveData<Boolean>()
+    val deleteSuccess: LiveData<Boolean> = _deleteSuccess
+
     private val _recipe = MutableLiveData<RecipeDetailDto>()
     val recipe: LiveData<RecipeDetailDto> = _recipe
 
@@ -35,6 +38,22 @@ class RecipeDetailViewModel : ViewModel() {
 
             override fun onFailure(call: Call<RecipeDetailDto>, t: Throwable) {
                 _error.value = t.message ?: "Error desconocido"
+            }
+        })
+    }
+
+    fun deleteRecipe(recipeId: Long, userId: Long) {
+        repository.deleteRecipe(recipeId, userId).enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    _deleteSuccess.value = true
+                } else {
+                    _error.value = "Error al eliminar la receta"
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                _error.value = t.message ?: "Error de conexión al eliminar"
             }
         })
     }

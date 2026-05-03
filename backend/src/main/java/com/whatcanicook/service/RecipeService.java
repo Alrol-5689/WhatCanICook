@@ -99,6 +99,53 @@ public class RecipeService {
         return recipeMapper.toDetailDto(saved);
     }
 
+    public RecipeDetailDto updateRecipe(Long recipeId, CreateRecipeRequest request) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Receta no encontrada"));
+
+        if (!recipe.getUser().getId().equals(request.getUserId())) {
+            throw new IllegalArgumentException("No tienes permiso para modificar esta receta");
+        }
+
+        List<Long> ingredientIds = request.getIngredientIds() != null ? request.getIngredientIds() : List.of();
+        List<Ingredient> ingredients = ingredientRepository.findAllById(ingredientIds);
+
+        if (ingredientIds.size() != ingredients.size()) {
+            throw new IllegalArgumentException("Algún ingrediente no existe");
+        }
+
+        recipe.setTitle(request.getTitle());
+        recipe.setDescription(request.getDescription());
+        recipe.setPublicRecipe(request.isPublicRecipe());
+        
+        recipe.getIngredients().clear();
+        recipe.getIngredients().addAll(ingredients);
+
+        recipe.getSteps().clear();
+        List<String> stepDescriptions = request.getSteps() != null ? request.getSteps() : List.of();
+        for (int i = 0; i < stepDescriptions.size(); i++) {
+            recipe.getSteps().add(RecipeStep.builder()
+                    .recipe(recipe)
+                    .stepNumber(i + 1)
+                    .description(stepDescriptions.get(i))
+                    .build());
+        }
+
+        Recipe saved = recipeRepository.save(recipe);
+        return recipeMapper.toDetailDto(saved);
+    }
+
+    public void deleteRecipe(Long recipeId, Long userId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("Receta no encontrada"));
+
+        if (!recipe.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("No tienes permiso para eliminar esta receta");
+        }
+
+        recipeRepository.delete(recipe);
+    }
+
     public List<RecipeSummaryDto> findPublicRecipesByIngredients(RecipesByIngredientsRequest request) {
         List<String> raw = request.getIngredients() != null ? request.getIngredients() : List.of();
         List<String> normalized = raw.stream()

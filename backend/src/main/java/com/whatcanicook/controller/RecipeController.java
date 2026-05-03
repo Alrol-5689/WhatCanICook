@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,6 +50,17 @@ public class RecipeController {
     @PostMapping
     public ResponseEntity<RecipeDetailDto> createRecipe(@RequestBody CreateRecipeRequest request) {
         return ResponseEntity.ok(recipeService.createRecipe(request));
+    }
+
+    @PutMapping("/{recipeId}")
+    public ResponseEntity<RecipeDetailDto> updateRecipe(@PathVariable Long recipeId, @RequestBody CreateRecipeRequest request) {
+        return ResponseEntity.ok(recipeService.updateRecipe(recipeId, request));
+    }
+
+    @DeleteMapping("/{recipeId}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long recipeId, @RequestParam Long userId) {
+        recipeService.deleteRecipe(recipeId, userId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/by-ingredients")

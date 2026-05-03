@@ -24,6 +24,7 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
 
     private var availableIngredients = listOf<IngredientDto>()
     private val selectedIngredientIds = mutableSetOf<Long>()
+    private var editRecipeId: Long = -1L
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,6 +39,13 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
         acciones()
 
         viewModel.fetchIngredients()
+
+        editRecipeId = arguments?.getLong("recipeId") ?: -1L
+        if (editRecipeId != -1L) {
+            binding.titleText.text = "Editar Receta"
+            binding.buttonCreateRecipe.text = "Actualizar Receta"
+            viewModel.loadRecipeForEdit(editRecipeId)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -58,14 +66,27 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
     private fun observarViewModel() {
         viewModel.ingredients.observe(viewLifecycleOwner) { ingredients ->
             availableIngredients = ingredients ?: emptyList()
-            selectedIngredientIds.clear()
+            // Si ya habíamos cargado los IDs seleccionados al editar, actualizamos el texto
             updateSelectedIngredientsText()
         }
 
+        viewModel.recipeToEdit.observe(viewLifecycleOwner) { recipe ->
+            binding.editTitle.setText(recipe.title)
+            binding.editDescription.setText(recipe.description)
+            binding.checkPublicRecipe.isChecked = recipe.publicRecipe
+            
+            selectedIngredientIds.clear()
+            selectedIngredientIds.addAll(recipe.ingredients.map { it.id })
+            updateSelectedIngredientsText()
+
+            stepAdapter.setSteps(recipe.steps.map { it.description })
+        }
+
         viewModel.createdRecipe.observe(viewLifecycleOwner) { recipe ->
+            val message = if (editRecipeId != -1L) "Receta actualizada:" else "Receta creada:"
             Toast.makeText(
                 requireContext(),
-                "Receta creada: ${recipe.title}",
+                "$message ${recipe.title}",
                 Toast.LENGTH_SHORT
             ).show()
 
@@ -118,14 +139,26 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
             val publicRecipe = binding.checkPublicRecipe.isChecked
             val userId = SessionManager.userId
 
-            viewModel.createRecipe(
-                title = title,
-                description = description,
-                publicRecipe = publicRecipe,
-                userId = userId,
-                ingredientIds = selectedIngredientIds.toList(),
-                steps = stepAdapter.steps.toList()
-            )
+            if (editRecipeId != -1L) {
+                viewModel.updateRecipe(
+                    recipeId = editRecipeId,
+                    title = title,
+                    description = description,
+                    publicRecipe = publicRecipe,
+                    userId = userId,
+                    ingredientIds = selectedIngredientIds.toList(),
+                    steps = stepAdapter.steps.toList()
+                )
+            } else {
+                viewModel.createRecipe(
+                    title = title,
+                    description = description,
+                    publicRecipe = publicRecipe,
+                    userId = userId,
+                    ingredientIds = selectedIngredientIds.toList(),
+                    steps = stepAdapter.steps.toList()
+                )
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.appcompat.app.AlertDialog
 import com.app.R
 import com.app.databinding.FragmentRecipeDetailBinding
 import com.app.dto.request.FavoriteRecipeRequest
@@ -61,6 +62,24 @@ class RecipeDetailFragment : Fragment() {
             Toast.makeText(requireContext(), "Receta no válida", Toast.LENGTH_SHORT).show()
             findNavController().navigateUp()
         }
+
+        binding.buttonEditRecipe.setOnClickListener {
+            val bundle = Bundle().apply {
+                putLong("recipeId", recipeId)
+            }
+            findNavController().navigate(R.id.recipeCreateFragment, bundle)
+        }
+
+        binding.buttonDeleteRecipe.setOnClickListener {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Eliminar Receta")
+                .setMessage("¿Estás seguro de que quieres eliminar esta receta? Esta acción no se puede deshacer.")
+                .setPositiveButton("Eliminar") { _, _ ->
+                    viewModel.deleteRecipe(recipeId, SessionManager.userId)
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }
     }
 
     private fun observarViewModel() {
@@ -70,6 +89,19 @@ class RecipeDetailFragment : Fragment() {
             binding.textUsername.text = getString(R.string.recipe_author, recipe.username)
             binding.textIngredients.text = recipe.ingredients.joinToString("\n") { "• ${it.name}" }
             binding.textSteps.text = recipe.steps.joinToString("\n") { "${it.stepNumber}. ${it.description}" }
+
+            if (recipe.userId == SessionManager.userId) {
+                binding.layoutActionButtons.visibility = View.VISIBLE
+            } else {
+                binding.layoutActionButtons.visibility = View.GONE
+            }
+        }
+
+        viewModel.deleteSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Receta eliminada", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { errorMsg ->

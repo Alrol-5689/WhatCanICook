@@ -38,6 +38,14 @@ class RecipeRepository(private val recipeApi: RecipeApi) {
         return recipeApi.createRecipe(request)
     }
 
+    fun updateRecipe(id: Long, request: CreateRecipeRequest): Call<RecipeDetailDto> {
+        return recipeApi.updateRecipe(id, request)
+    }
+
+    fun deleteRecipe(id: Long, userId: Long): Call<Void> {
+        return recipeApi.deleteRecipe(id, userId)
+    }
+
     fun getPublicRecipesByIngredients(request: RecipesByIngredientsRequest): Call<List<RecipeSummaryDto>> {
         return recipeApi.getPublicRecipesByIngredients(request)
     }
