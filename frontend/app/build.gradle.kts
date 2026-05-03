@@ -25,7 +25,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val baseUrl = localProperties.getProperty("BASE_URL") ?: "http://10.0.2.2:8080/"
+        val configuredBaseUrl = localProperties.getProperty("BASE_URL") ?: "http://10.0.2.2:8080/"
+        val baseUrl = configuredBaseUrl.trim().let { if (it.endsWith("/")) it else "$it/" }
         buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 

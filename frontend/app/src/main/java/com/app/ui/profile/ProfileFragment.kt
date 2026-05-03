@@ -1,6 +1,9 @@
 package com.app.ui.profile
 
 import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import android.view.LayoutInflater
@@ -24,14 +27,16 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
 import java.io.File
+import kotlin.math.max
 
 class ProfileFragment : Fragment() {
 
     private var _binding: ActivityProfileBinding? = null
     private val binding get() = _binding!!
 
-    private var pendingCameraUri: android.net.Uri? = null
+    private var pendingCameraUri: Uri? = null
 
     private val requestCameraPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -139,21 +144,20 @@ class ProfileFragment : Fragment() {
         takePicture.launch(uri)
     }
 
-    private fun uploadFromUri(uri: android.net.Uri) {
+    private fun uploadFromUri(uri: Uri) {
         if (!SessionManager.isLoggedIn()) {
             Toast.makeText(requireContext(), "Haz login para cambiar la foto", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val bytes = requireContext().contentResolver.openInputStream(uri)?.use { it.readBytes() }
+        val bytes = getCompressedJpegBytes(uri)
         if (bytes == null || bytes.isEmpty()) {
             Toast.makeText(requireContext(), "No se pudo leer la imagen", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val mime = requireContext().contentResolver.getType(uri) ?: "image/*"
-        val requestBody = bytes.toRequestBody(mime.toMediaTypeOrNull())
-        val part = MultipartBody.Part.createFormData("file", "profile", requestBody)
+        val requestBody = bytes.toRequestBody("image/jpeg".toMediaTypeOrNull())
+        val part = MultipartBody.Part.createFormData("file", "profile.jpg", requestBody)
 
         binding.changePhotoButton.isEnabled = false
         RetrofitClient.userApi.uploadProfileImage(SessionManager.userId, part)
@@ -179,5 +183,48 @@ class ProfileFragment : Fragment() {
                     Toast.makeText(requireContext(), t.message ?: "Error de conexión", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    private fun getCompressedJpegBytes(uri: Uri): ByteArray? {
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        requireContext().contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(it, null, options)
+        }
+
+        if (options.outWidth <= 0 || options.outHeight <= 0) return null
+
+        val maxSize = 1024
+        val sampleSize = calculateSampleSize(options.outWidth, options.outHeight, maxSize)
+        val decodeOptions = BitmapFactory.Options().apply { inSampleSize = sampleSize }
+        val decoded = requireContext().contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(it, null, decodeOptions)
+        } ?: return null
+
+        val scaled = scaleBitmap(decoded, maxSize)
+        val output = ByteArrayOutputStream()
+        scaled.compress(Bitmap.CompressFormat.JPEG, 85, output)
+
+        if (scaled != decoded) scaled.recycle()
+        decoded.recycle()
+
+        return output.toByteArray()
+    }
+
+    private fun calculateSampleSize(width: Int, height: Int, maxSize: Int): Int {
+        var sampleSize = 1
+        while (width / sampleSize > maxSize * 2 || height / sampleSize > maxSize * 2) {
+            sampleSize *= 2
+        }
+        return sampleSize
+    }
+
+    private fun scaleBitmap(bitmap: Bitmap, maxSize: Int): Bitmap {
+        val largestSide = max(bitmap.width, bitmap.height)
+        if (largestSide <= maxSize) return bitmap
+
+        val scale = maxSize.toFloat() / largestSide
+        val width = (bitmap.width * scale).toInt()
+        val height = (bitmap.height * scale).toInt()
+        return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
 }
