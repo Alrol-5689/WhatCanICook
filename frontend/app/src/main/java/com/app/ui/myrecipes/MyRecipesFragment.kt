@@ -45,6 +45,10 @@ class MyRecipesFragment : Fragment() {
             (requireActivity() as MainActivity).openDrawer()
         }
 
+        binding.fabCreateRecipe.setOnClickListener {
+            findNavController().navigate(R.id.recipeCreateFragment)
+        }
+
         setupRecyclerView()
         observeViewModel()
 

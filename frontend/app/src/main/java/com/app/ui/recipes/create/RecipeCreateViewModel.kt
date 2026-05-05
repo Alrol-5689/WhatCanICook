@@ -28,9 +28,14 @@ class RecipeCreateViewModel : ViewModel() {
     private val _recipeToEdit = MutableLiveData<RecipeDetailDto>()
     val recipeToEdit: LiveData<RecipeDetailDto> = _recipeToEdit
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     fun fetchIngredients() {
+        _isLoading.value = true
         RetrofitClient.ingredientApi.getAllIngredients().enqueue(object : Callback<List<IngredientDto>> {
             override fun onResponse(call: Call<List<IngredientDto>>, response: Response<List<IngredientDto>>) {
+                _isLoading.value = false
                 if (response.isSuccessful) {
                     _ingredients.value = response.body() ?: emptyList()
                 } else {
@@ -39,14 +44,17 @@ class RecipeCreateViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<List<IngredientDto>>, t: Throwable) {
+                _isLoading.value = false
                 _error.value = "Error conectando para ingredientes"
             }
         })
     }
 
     fun loadRecipeForEdit(recipeId: Long) {
+        _isLoading.value = true
         recipeRepository.getRecipeById(recipeId).enqueue(object : Callback<RecipeDetailDto> {
             override fun onResponse(call: Call<RecipeDetailDto>, response: Response<RecipeDetailDto>) {
+                _isLoading.value = false
                 if (response.isSuccessful && response.body() != null) {
                     _recipeToEdit.value = response.body()
                 } else {
@@ -55,6 +63,7 @@ class RecipeCreateViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<RecipeDetailDto>, t: Throwable) {
+                _isLoading.value = false
                 _error.value = "Error conectando para cargar receta"
             }
         })
@@ -91,8 +100,10 @@ class RecipeCreateViewModel : ViewModel() {
             steps = cleanSteps
         )
 
+        _isLoading.value = true
         recipeRepository.createRecipe(request).enqueue(object : Callback<RecipeDetailDto> {
             override fun onResponse(call: Call<RecipeDetailDto>, response: Response<RecipeDetailDto>) {
+                _isLoading.value = false
                 if (response.isSuccessful && response.body() != null) {
                     _createdRecipe.value = response.body()
                 } else {
@@ -101,6 +112,7 @@ class RecipeCreateViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<RecipeDetailDto>, t: Throwable) {
+                _isLoading.value = false
                 _error.value = t.message ?: "Error de conexión"
             }
         })
@@ -133,8 +145,10 @@ class RecipeCreateViewModel : ViewModel() {
             steps = cleanSteps
         )
 
+        _isLoading.value = true
         recipeRepository.updateRecipe(recipeId, request).enqueue(object : Callback<RecipeDetailDto> {
             override fun onResponse(call: Call<RecipeDetailDto>, response: Response<RecipeDetailDto>) {
+                _isLoading.value = false
                 if (response.isSuccessful && response.body() != null) {
                     _createdRecipe.value = response.body() // Reusamos _createdRecipe para cerrar el fragmento
                 } else {
@@ -143,6 +157,7 @@ class RecipeCreateViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<RecipeDetailDto>, t: Throwable) {
+                _isLoading.value = false
                 _error.value = t.message ?: "Error de conexión"
             }
         })

@@ -123,26 +123,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/editIngredientSearch" />
 
-        <TextView
-            android:id="@+id/tvSelectedIngredients"
+        <HorizontalScrollView
+            android:id="@+id/hsvSelectedIngredients"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/ningun_ingrediente_seleccionado"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            app:layout_constraintEnd_toStartOf="@+id/btnClearIngredients"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rvIngredientSearch" />
-
-        <Button
-            android:id="@+id/btnClearIngredients"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/limpiar"
-            app:layout_constraintBottom_toBottomOf="@id/tvSelectedIngredients"
+            android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvSelectedIngredients" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rvIngredientSearch">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupIngredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true" />
+        </HorizontalScrollView>
 
         <TextView
             android:id="@+id/textStepsLabel"
@@ -153,7 +149,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvSelectedIngredients" />
+            app:layout_constraintTop_toBottomOf="@id/hsvSelectedIngredients" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSteps"
@@ -199,5 +195,25 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/loadingOverlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/pumpkin_orange" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

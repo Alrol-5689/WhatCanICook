@@ -57,7 +57,7 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
             selectedIngredientIds.add(ingredient.id)
             binding.editIngredientSearch.text.clear()
             binding.rvIngredientSearch.visibility = View.GONE
-            updateSelectedIngredientsText()
+            updateSelectedIngredientsChips()
         }
         binding.rvIngredientSearch.layoutManager = LinearLayoutManager(requireContext())
         binding.rvIngredientSearch.adapter = ingredientSearchAdapter
@@ -66,8 +66,8 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
     private fun observarViewModel() {
         viewModel.ingredients.observe(viewLifecycleOwner) { ingredients ->
             availableIngredients = ingredients ?: emptyList()
-            // Si ya habíamos cargado los IDs seleccionados al editar, actualizamos el texto
-            updateSelectedIngredientsText()
+            // Si ya habíamos cargado los IDs seleccionados al editar, actualizamos los chips
+            updateSelectedIngredientsChips()
         }
 
         viewModel.recipeToEdit.observe(viewLifecycleOwner) { recipe ->
@@ -77,7 +77,7 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
             
             selectedIngredientIds.clear()
             selectedIngredientIds.addAll(recipe.ingredients.map { it.id })
-            updateSelectedIngredientsText()
+            updateSelectedIngredientsChips()
 
             stepAdapter.setSteps(recipe.steps.map { it.description })
         }
@@ -96,16 +96,27 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
         viewModel.error.observe(viewLifecycleOwner) { errorMsg ->
             Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()
         }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.loadingOverlay.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.buttonCreateRecipe.isEnabled = !isLoading
+        }
     }
 
-    private fun updateSelectedIngredientsText() {
-        if (selectedIngredientIds.isEmpty()) {
-            binding.tvSelectedIngredients.text = "Ningún ingrediente seleccionado"
-        } else {
-            val names = availableIngredients
-                .filter { selectedIngredientIds.contains(it.id) }
-                .map { it.castellano?.takeIf(String::isNotBlank) ?: it.name }
-            binding.tvSelectedIngredients.text = names.joinToString("\n- ", prefix = "- ")
+    private fun updateSelectedIngredientsChips() {
+        binding.chipGroupIngredients.removeAllViews()
+        val selected = availableIngredients.filter { selectedIngredientIds.contains(it.id) }
+        
+        for (ingredient in selected) {
+            val chip = com.google.android.material.chip.Chip(requireContext()).apply {
+                text = ingredient.castellano?.takeIf(String::isNotBlank) ?: ingredient.name
+                isCloseIconVisible = true
+                setOnCloseIconClickListener {
+                    selectedIngredientIds.remove(ingredient.id)
+                    updateSelectedIngredientsChips()
+                }
+            }
+            binding.chipGroupIngredients.addView(chip)
         }
     }
 
@@ -124,20 +135,31 @@ class RecipeCreateFragment : Fragment(R.layout.fragment_recipe_create) {
             }
         }
 
-        binding.btnClearIngredients.setOnClickListener {
-            selectedIngredientIds.clear()
-            updateSelectedIngredientsText()
-        }
+        // El botón btnClearIngredients fue eliminado a favor de los chips individuales
 
         binding.btnAddStep.setOnClickListener {
             stepAdapter.addStep()
         }
 
         binding.buttonCreateRecipe.setOnClickListener {
-            val title = binding.editTitle.text.toString()
-            val description = binding.editDescription.text.toString()
+            val title = binding.editTitle.text.toString().trim()
+            val description = binding.editDescription.text.toString().trim()
             val publicRecipe = binding.checkPublicRecipe.isChecked
             val userId = SessionManager.userId
+
+            var isValid = true
+
+            if (title.isEmpty()) {
+                binding.editTitle.error = "El título es obligatorio"
+                isValid = false
+            }
+
+            if (description.isEmpty()) {
+                binding.editDescription.error = "La descripción es obligatoria"
+                isValid = false
+            }
+
+            if (!isValid) return@setOnClickListener
 
             if (editRecipeId != -1L) {
                 viewModel.updateRecipe(
