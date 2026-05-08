@@ -2,9 +2,7 @@ package com.app.network
 
 import com.app.dto.model.IngredientDto
 import retrofit2.Call
-import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface IngredientApi {
@@ -12,9 +10,7 @@ interface IngredientApi {
     @GET("ingredients")
     fun getAllIngredients(): Call<List<IngredientDto>>
 
-    @GET("ingredients/search")
+    @GET("ingredients")
     fun searchIngredients(@Query("name") name: String): Call<List<IngredientDto>>
 
-    @POST("ingredients")
-    fun createIngredient(@Body ingredient: IngredientDto): Call<IngredientDto>
 }

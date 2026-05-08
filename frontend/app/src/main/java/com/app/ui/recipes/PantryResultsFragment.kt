@@ -42,8 +42,7 @@ class PantryResultsFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
 
-        val ingredientIds = arguments?.getLongArray("ingredientIds")?.toList() ?: emptyList()
-        viewModel.loadRecipes(ingredientIds)
+        viewModel.loadRecipesFromPantry()
         refreshFavorites()
     }
 

@@ -170,32 +170,4 @@ class PantryViewModel : ViewModel() {
         return ArrayList((_selectedIngredients.value ?: emptyList()).map { it.id })
     }
 
-    fun createNewIngredient(name: String) {
-        val newIngredient = IngredientDto(
-            id = 0, // Backend asignará el ID
-            name = name,
-            castellano = name,
-            carbs100g = 0.0,
-            protein100g = 0.0,
-            fat100g = 0.0,
-            fiber100g = 0.0
-        )
-        RetrofitClient.ingredientApi.createIngredient(newIngredient).enqueue(object : Callback<IngredientDto> {
-            override fun onResponse(call: Call<IngredientDto>, response: Response<IngredientDto>) {
-                if (response.isSuccessful) {
-                    val created = response.body()
-                    if (created != null) {
-                        // Lo añadimos a disponibles y lo seleccionamos automáticamente
-                        _availableIngredients.value = (_availableIngredients.value ?: emptyList()) + created
-                        addIngredient(created)
-                    }
-                } else {
-                    _error.value = "Error al crear ingrediente"
-                }
-            }
-            override fun onFailure(call: Call<IngredientDto>, t: Throwable) {
-                _error.value = "Error de conexión al crear ingrediente"
-            }
-        })
-    }
 }

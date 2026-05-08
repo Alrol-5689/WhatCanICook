@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/outline_arrow_back_ios_24"
             app:navigationIconTint="@color/black"
-            app:title="Mi Despensa"
+            app:title="@string/mi_despensa"
             app:titleTextColor="@color/pumpkin_orange" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,7 +32,7 @@
             android:id="@+id/textPantryInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Añade los ingredientes que tienes en casa para encontrar recetas a medida."
+            android:text="@string/pantry_info"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent"
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="@android:color/transparent"
-                android:hint="Buscar ingrediente (ej. Pollo)..."
+                android:hint="@string/buscar_ingrediente_hint"
                 android:paddingHorizontal="16dp"
                 android:inputType="text"
                 android:imeOptions="actionDone"
@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="INGREDIENTES DISPONIBLES"
+            android:text="@string/ingredientes_disponibles"
             android:textColor="@color/pumpkin_orange_dark"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/searchCard"
@@ -111,15 +111,6 @@
 
         </HorizontalScrollView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCreateIngredient"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+ Crear nuevo ingrediente"
-            android:textColor="@color/pumpkin_orange"
-            app:layout_constraintTop_toBottomOf="@id/scrollAvailableIngredients"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Lista de ingredientes actuales -->
         <TextView
@@ -127,10 +118,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="EN MI DESPENSA"
+            android:text="@string/en_mi_despensa"
             android:textColor="@color/pumpkin_orange_dark"
             android:textStyle="bold"
-            app:layout_constraintTop_toBottomOf="@id/btnCreateIngredient"
+            app:layout_constraintTop_toBottomOf="@id/scrollAvailableIngredients"
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -150,7 +141,7 @@
             android:layout_height="60dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/black"
-            android:text="¡A COCINAR!"
+            android:text="@string/btn_cocinar"
             android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold"

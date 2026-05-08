@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.Toast
 import android.view.inputmethod.EditorInfo
 import android.view.KeyEvent
-import androidx.appcompat.app.AlertDialog
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -91,7 +90,11 @@ class PantryFragment : Fragment() {
                     if (existing != null) {
                         viewModel.addIngredient(existing)
                     } else {
-                        viewModel.createNewIngredient(name)
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.ingrediente_no_encontrado),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     
                     binding.editSearchIngredient.text?.clear()
@@ -106,35 +109,9 @@ class PantryFragment : Fragment() {
         binding.findRecipesButton.setOnClickListener {
             val ingredientIds = viewModel.getSelectedIngredientIds()
             if (ingredientIds.isEmpty()) return@setOnClickListener
-            
-            val bundle = Bundle().apply {
-                putLongArray("ingredientIds", ingredientIds.toLongArray())
-            }
-            findNavController().navigate(R.id.action_pantry_to_results, bundle)
-        }
 
-        binding.btnCreateIngredient.setOnClickListener {
-            mostrarDialogoCrearIngrediente()
+            findNavController().navigate(R.id.action_pantry_to_results)
         }
-    }
-
-    private fun mostrarDialogoCrearIngrediente() {
-        val editText = EditText(requireContext()).apply {
-            hint = "Nombre del ingrediente"
-            setPadding(50, 50, 50, 50)
-        }
-        AlertDialog.Builder(requireContext())
-            .setTitle("Crear Ingrediente")
-            .setMessage("Añade un nuevo ingrediente a la base de datos global.")
-            .setView(editText)
-            .setPositiveButton("Crear") { _, _ ->
-                val name = editText.text.toString().trim()
-                if (name.isNotEmpty()) {
-                    viewModel.createNewIngredient(name)
-                }
-            }
-            .setNegativeButton("Cancelar", null)
-            .show()
     }
 
     private fun observarViewModel() {

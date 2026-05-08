@@ -49,7 +49,9 @@
     <string name="pantry_info">Añade los ingredientes que tienes en casa para encontrar recetas a medida.</string>
     <string name="buscar_ingrediente_hint">Buscar ingrediente (ej. Pollo)...</string>
     <string name="en_mi_despensa">EN MI DESPENSA</string>
-    <string name="btn_cocinar">¡A COCINAR!</string>
+    <string name="btn_cocinar">BUSCAR RECETAS</string>
+    <string name="ingrediente_no_encontrado">Ingrediente no encontrado</string>
+    <string name="ingredientes_disponibles">INGREDIENTES DISPONIBLES</string>
     <string name="titulo_de_la_receta">Título de la receta</string>
     <string name="descripcion">Descripción</string>
     <string name="receta_publica">Receta pública</string>
